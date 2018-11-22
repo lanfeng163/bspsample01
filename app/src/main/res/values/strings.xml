@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">QRコード決済システム</string>
+
+    <string name="lab_userid">ユーザーID：</string>
+    <string name="lab_possword">パスワード：</string>
+    <string name="btn_login">ログイン</string>
+    <string name="btn_clear">クリア</string>
+
+    <string name="app_info">AliPayとWeChatPayが使えます。</string>
+
+    <string name="msg_title1">エラー</string>
+    <string name="msg_title2">メッセージ</string>
+    <string name="msg_title3">確認</string>
+
+    <string name="msg_return1">はい</string>
+    <string name="msg_return2">いいえ</string>
+
+    <string name="menu_group1">決済</string>
+
+    <string name="group1menu1">決済処理</string>
+    <string name="group1menu2">返金処理</string>
+
+    <string name="menu_group2">確定</string>
+
+    <string name="group2menu1">決済一覧</string>
+    <string name="group2menu2">返金一覧</string>
+
+    <string name="lab_payCp_kbn">決済センター</string>
+    <string name="lab_payCp_Nm1">AliPay</string>
+    <string name="lab_payCp_Nm2">WeChatPay</string>
+    <string name="lab_Amount">決済金額</string>
+
+    <string name="lab_customId">取引カード情報</string>
+
+    <string name="button_on">起動</string>
+    <string name="button_off">中止</string>
+    <string name="button_seed">決済</string>
+    <string name="button_clear">クリア</string>
+
+    <string name="button_cancel">返金</string>
+    <string name="cancel_lab_Amount">返金金額</string>
+    <string name="cancel_lab_customId">取引コード情報</string>
+
+    <string name="lab_status">状態:</string>
+    <string name="lab_userInfo">ユーザー情報:</string>
+
+    <string name="msp_webapi_url">http://47.74.12.84:80/api/proxy/pay</string>
+    <string name="msp_webapi_url0">http://192.168.31.88:56957/api/proxy/pay</string>
+    <string name="msp_webapi_url1">http://192.168.31.239:3000</string>
+    <string name="msp_webapi_url2">http://weather.livedoor.com/forecast/webservice/json/v1</string>
+
+    <string name="msg0001">ユーザーIDを入力ください。</string>
+    <string name="msg0002">パスワードを入力ください。</string>
+    <string name="msg0003">ユーザーIDが存在しません。</string>
+    <string name="msg0004">パスワードが違うです。</string>
+    <string name="msg0005">決済センターに送信してよろしいでしょうか。</string>
+
+    <string name="msg0006">先に決済センター名を選択ください。</string>
+    <string name="msg0007">先に金額を入力ください。</string>
+    <string name="msg0008">先に取引カード情報をスキャンください。</string>
+
+    <string name="msg0009">スキャンナーが中止しました。</string>
+    <string name="msg0010">画面が初期化しました。</string>
+    <string name="msg0011">スキャンナーが起動していません。</string>
+
+    <string name="msg0012">送信しました。サーバー側に処理中…</string>
+    <string name="msg0013">処理がキャンセルしました。</string>
+
+    <string name="msg0014">EMDKManagerを初期化する際に失敗しました。</string>
+
+    <string name="msg0015">送信処理が異常発生しました。</string>
+    <string name="msg0016">送信結果JSONの処理が異常終了しました。</string>
+    <string name="msg0017">処理が成功しました。</string>
+
+    <string name="msg0018">先に取引コード情報をスキャンください。</string>
+
+    <string name="msg0019">...</string>
+    <string name="msg0020">...</string>
+    <string name="msg0021">...</string>
+
+    <string name="msg0022">スキャンナーが初期化…</string>
+    <string name="msg0023">スキャンナーが停止しました。</string>
+
+    <string name="msg0024">送信処理のResponseCodeは200以外になっています。</string>
+
+</resources>
