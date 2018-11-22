@@ -14,19 +14,6 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.symbol.emdk.EMDKManager;
-import com.symbol.emdk.EMDKManager.EMDKListener;
-import com.symbol.emdk.EMDKResults;
-import com.symbol.emdk.barcode.BarcodeManager;
-import com.symbol.emdk.barcode.ScanDataCollection;
-import com.symbol.emdk.barcode.Scanner;
-import com.symbol.emdk.barcode.Scanner.DataListener;
-import com.symbol.emdk.barcode.Scanner.StatusListener;
-import com.symbol.emdk.barcode.ScannerConfig;
-import com.symbol.emdk.barcode.ScannerException;
-import com.symbol.emdk.barcode.ScannerResults;
-import com.symbol.emdk.barcode.StatusData;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,16 +29,7 @@ import java.util.ArrayList;
 /**
  * スキャン　決済送信Activity
  */
-public class ScanActivity extends Activity implements EMDKListener, StatusListener, DataListener {
-
-    // Declare a variable to store EMDKManager object
-    private EMDKManager emdkManager = null;
-
-    // Declare a variable to store Barcode Manager object
-    private BarcodeManager barcodeManager = null;
-
-    // Declare a variable to hold scanner device to scan
-    private Scanner scanner = null;
+public class ScanActivity extends Activity {
 
     // Edit Text that is used to display scanned barcode data
 
@@ -116,35 +94,12 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
 
         System.out.println("111111111 onCreate  EMDKManager.getEMDKManager 11111111111");
         //EMDKManagerを初期化
-        // The EMDKManager object will be created and returned in the callback.
-        EMDKResults results = EMDKManager.getEMDKManager(
-                getApplicationContext(), this);
-
-        // Check the return status of getEMDKManager and update the status Text
-        // View accordingly
-        if (results.statusCode != EMDKResults.STATUS_CODE.SUCCESS) {
-            statusTextView.setText(R.string.msg0014);
-            return;
-        }
 
         //処理区分により、画面の文字を初期化
         this.setLayout();
 
         //フォーカスを設定
         this.setFocus(amountDataTxt);
-    }
-
-    @Override
-    public void onOpened(EMDKManager emdkManager) {
-        System.out.println("111111111 onOpened 11111111111");
-        this.emdkManager = emdkManager;
-
-        //BarcodeManagerを初期化
-        // Acquire the barcode manager resources
-        if (barcodeManager == null) {
-            System.out.println("111111111 onOpened() emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE) 11111111111");
-            barcodeManager = (BarcodeManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
-        }
     }
 
     //APP再開します
@@ -154,19 +109,6 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
         super.onResume();
         // The application is in foreground
 
-        // Acquire the barcode manager resources
-        if (emdkManager != null) {
-
-            if (barcodeManager == null) {
-                System.out.println("111111111 onResume() emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE) 11111111111");
-                barcodeManager = (BarcodeManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
-            }
-
-            // Initialize scanner
-            initializeScanner();
-        } else {
-            System.out.println("onResume() emdkManager is null ");
-        }
     }
 
     //立ち留まる　APP一時停止 Backにします
@@ -176,17 +118,7 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
         super.onPause();
         // The application is in background
 
-        // De-initialize scanner
-        deInitializeScanner();
 
-        // Release the barcode manager resources
-        if (emdkManager != null) {
-            System.out.println("111111111 emdkManager.release(EMDKManager.FEATURE_TYPE.BARCODE) 11111111111");
-            emdkManager.release(EMDKManager.FEATURE_TYPE.BARCODE);
-            barcodeManager = null;
-        } else {
-            System.out.println("onResume() emdkManager is null ");
-        }
     }
 
     //終了します。
@@ -198,53 +130,7 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
         super.onDestroy();
 
         // De-initialize scanner
-        deInitializeScanner();
 
-        // Release all the resources
-        if (emdkManager != null) {
-            System.out.println("111111111 emdkManager.release(); 11111111111");
-            // Clean up the objects created by EMDK manager
-            emdkManager.release();
-            emdkManager = null;
-        } else {
-            System.out.println("onResume() emdkManager is null ");
-        }
-    }
-
-    //EMDKListenerを閉じる
-    //some lines of code omitted for clarity
-    @Override
-    public void onClosed() {
-        System.out.println("222222222 onClosed 222222222");
-
-        // De-initialize scanner
-        deInitializeScanner();
-
-        // Release all the resources
-        if (emdkManager != null) {
-            System.out.println("111111111 emdkManager.release(); 11111111111");
-            // Clean up the objects created by EMDK manager
-            emdkManager.release();
-            emdkManager = null;
-        } else {
-            System.out.println("onResume() emdkManager is null ");
-        }
-    }
-
-    //スキャンデータを取得 (非同期処理)
-    @Override
-    public void onData(ScanDataCollection scanDataCollection) {
-        // Use the scanned data, process it on background thread using AsyncTask
-        // and update the UI thread with the scanned results
-        new AsyncDataUpdate().execute(scanDataCollection);
-    }
-
-    //スキャンナー状態を確認 (非同期処理)
-    @Override
-    public void onStatus(StatusData statusData) {
-        // process the scan status event on the background thread using
-        // AsyncTask and update the UI thread with current scanner state
-        new AsyncStatusUpdate().execute(statusData);
     }
 
     //開始ボタンの処理
@@ -259,7 +145,6 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
             System.out.println(" ##############JLM#####　＄＄＄＄＄＄＄＄＄＄＄＄＄＄＄　起動ボタンの処理;  ");
 
             //スキャンナーを初期化
-            initializeScanner();
 
             //スキャンナーを開始
             //scanRead();
@@ -310,151 +195,6 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
     // thread and updated the result on UI thread with scanned data and type of label
     //その際、AsyncTaskにジェネリクスを3個指定する必要があります。
     // これは、AsyncTaskを継承したクラス内のメソッドの引数や戻り値の型を指定するためです。
-    private class AsyncDataUpdate extends AsyncTask<ScanDataCollection, Void, String> {
-
-        @Override
-        protected String doInBackground(ScanDataCollection... params) {
-            System.out.println("############ AsyncDataUpdate  doInBackground ");
-
-            // Status string that contains both barcode data and type of barcode
-            // that is being scanned
-            String codeDataStr = "";
-
-            // Starts an asynchronous Scan. The method will not turn ON the
-            // scanner. It will, however, put the scanner in a state in
-            // which
-            // the scanner can be turned ON either by pressing a hardware
-            // trigger or can be turned ON automatically.
-
-            ScanDataCollection scanDataCollection = params[0];
-
-            // The ScanDataCollection object gives scanning result and the
-            // collection of ScanData. So check the data and its status
-            if (scanDataCollection != null && scanDataCollection.getResult() == ScannerResults.SUCCESS) {
-
-                ArrayList <ScanDataCollection.ScanData>scanDataList = scanDataCollection.getScanData();
-
-                // Iterate through scanned data and prepare the statusStr
-                for (ScanDataCollection.ScanData data : scanDataList) {
-                    // Get the scanned data
-                    String barcodeData = data.getData();
-                    // Get the type of label being scanned
-                    //   ScanDataCollection.LabelType labelType = data.getLabelType();
-                    // Concatenate barcode data and label type
-                    codeDataStr = barcodeData; // + " " + labelType;
-                }
-            }
-
-            // Return result to populate on UI thread
-            return codeDataStr;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Update the customDataTxt EditText on UI thread with barcode data
-            customDataTxt.setText(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
-
-    // AsyncTask that configures the current state of scanner on background
-    // thread and updates the result on UI thread
-    private class AsyncStatusUpdate extends AsyncTask<StatusData, Void, String> {
-
-        @Override
-        protected String doInBackground(StatusData... params) {
-            System.out.println("############ AsyncStatusUpdate  doInBackground ");
-            String statusStr = "";
-
-            if (starting) {
-                System.out.println("##############JLM#########   開始ボタンを押下した…  ");
-                //開始中…          ！！！
-                //statusStr = getString(R.string.msg0022);
-                // Return result to populate on UI thread
-                return statusStr;
-            }
-            if (ending) {
-                System.out.println("##############JLM#########   停止ボタンを押下した…  ");
-                //停止中…          ！！！
-                //statusStr = getString(R.string.msg0023);
-                // Return result to populate on UI thread
-                return statusStr;
-            }
-            // Get the current state of scanner in background
-            StatusData statusData = params[0];
-            StatusData.ScannerStates state = statusData.getState();
-
-            System.out.println("##############JLM#########  StatusData.ScannerStates is:  " + state);
-
-            // Different states of Scanner
-            switch (state) {
-                // Scanner is IDLE
-                case IDLE:
-                    statusStr = "The scanner enabled and its idle";
-
-                    //Trueの場合、連続スキャンできますように
-                    if (true) {
-                        try {
-                            System.out.println("##############JLM#########  IDLE  ⇒  scanner.read()");
-
-                            // An attempt to use the scanner continuously and rapidly (with a delay < 100 ms between scans)
-                            // may cause the scanner to pause momentarily before resuming the scanning.
-                            // Hence add some delay (>= 100ms) before submitting the next read.
-                            try {
-                                Thread.sleep(300);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            //    scanner.read();
-                            scanRead();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
-                // Scanner is SCANNING
-                case SCANNING:
-                    statusStr = "Scanning..";
-                    break;
-                // Scanner is waiting for trigger press
-                case WAITING:
-                    statusStr = "Waiting for trigger press..";
-                    break;
-                // Scanner is not enabled
-                case DISABLED:
-                    statusStr = "Scanner is not enabled";
-                    break;
-                default:
-                    break;
-            }
-            // Return result to populate on UI thread
-            return statusStr;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Update the status text view on UI thread with current scanner
-            // state
-            statusTextView.setText(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
-
     //決済クラス
     private class DoPayment extends AsyncTask<JSONObject, String, String> {
 
@@ -1011,134 +751,10 @@ public class ScanActivity extends Activity implements EMDKListener, StatusListen
 
         System.out.println(" ##############JLM#####　＄＄＄＄＄＄＄　スキャンナーを終了処理;  ");
 
-        //スキャンナーの初期化を取り下げる
-        deInitializeScanner();
 
         ending = false;
     }
 
-    //スキャンナーを初期化
-    private void initializeScanner() {
-        if (scanner == null) {
-            System.out.println(" ##############JLM#####　initializeScanner ");
-
-            try {
-                if (barcodeManager == null) {
-                    // Get the Barcode Manager object
-                    barcodeManager = (BarcodeManager) this.emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
-                }
-                // Get default scanner defined on the device
-                scanner = barcodeManager.getDevice(BarcodeManager.DeviceIdentifier.DEFAULT);
-
-                // Add data and status listeners
-                scanner.addDataListener(this);
-                scanner.addStatusListener(this);
-
-                // Hard trigger. When this mode is set, the user has to manually
-                // press the trigger on the device after issuing the read call.
-                scanner.triggerType = Scanner.TriggerType.HARD;
-
-                //Set ScannerConfig
-                setDecoders();
-
-                // Enable the scanner
-                scanner.enable();
-
-                //set startRead flag to true. this flag will be used in the OnStatus callback to insure
-                //the scanner is at an IDLE state and a read is not pending before calling scanner.read()
-                startRead = true;
-
-            } catch (ScannerException e) {
-                e.printStackTrace();
-                System.out.println("##############JLM######  initializeScanner Error  ");
-            }
-        }
-    }
-
-    //ScannerConfig　をセット
-    private void setDecoders() {
-        if ((scanner != null) && (scanner.isEnabled())) {
-            try {
-                ScannerConfig config = scanner.getConfig();
-                // Set EAN8
-                config.decoderParams.ean8.enabled = true;
-                // Set EAN13
-                config.decoderParams.ean13.enabled = true;
-                // Set Code39
-                config.decoderParams.code39.enabled = true;
-                //Set Code128
-                config.decoderParams.code128.enabled = true;
-
-                //Decode LED ON duration upon successful decode in milliseconds.
-                //This value can be from 0ms to 1000ms with a step of 25ms.
-                config.scanParams.decodeLEDTime = 500;
-
-                // set Illumination Mode, which is available only for
-                // INTERNAL_CAMERA1 device type
-                //イルミネーション ON OFF
-                config.readerParams.readerSpecific.cameraSpecific.illuminationMode = ScannerConfig.IlluminationMode.OFF;
-
-                scanner.setConfig(config);
-            } catch (ScannerException e) {
-                e.printStackTrace();
-                System.out.println("##############JLM############## setDecoders doInBackground error ");
-            }
-        }
-    }
-
-    //スキャンを開始
-    private void scanRead() {
-        if (startRead && scanner != null) {
-            try {
-                if(scanner.isEnabled()) {
-
-//                    System.out.println("##############JLM#####  do cancelRead  ");
-//                    scanner.cancelRead();
-
-                    ScannerConfig config = scanner.getConfig();
-                    //イルミネーション ON OFF
-                    config.readerParams.readerSpecific.cameraSpecific.illuminationMode = ScannerConfig.IlluminationMode.OFF;
-                    scanner.setConfig(config);
-
-                    System.out.println("##############JLM#####  do scanRead  ");
-                    // Submit a new read.
-                    scanner.read();
-                } else {
-                    statusTextView.setText(R.string.msg0011);
-                }
-            } catch (ScannerException e) {
-                e.printStackTrace();
-                System.out.println("##############JLM######   scanRead Error  ");
-            }
-        }
-    }
-
-    //スキャンナーの初期化を取り下げる
-    private void deInitializeScanner() {
-        if (scanner != null) {
-            System.out.println("##############JLM#######  do deInitializeScanner  ");
-            try {
-                scanner.cancelRead();
-                scanner.disable();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                scanner.removeDataListener(this);
-                scanner.removeStatusListener(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                scanner.release();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            scanner = null;
-        } {
-         //   statusTextView.setText(R.string.msg0011);
-        }
-    }
 
     public Context getApplicationContext() {
         return this;

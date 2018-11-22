@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="com.symbol.emdk.permission.EMDK" />
 
     <application
         android:name=".CommGlobals"
@@ -15,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <uses-library android:name="com.symbol.emdk" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
