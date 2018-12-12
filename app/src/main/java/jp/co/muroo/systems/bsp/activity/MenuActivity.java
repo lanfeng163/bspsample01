@@ -1,9 +1,7 @@
-package jp.co.muroo.systems.bspsample01;
+package jp.co.muroo.systems.bsp.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,26 +10,29 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TwoLineListItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import jp.co.muroo.systems.bsp.MspApplication;
+import jp.co.muroo.systems.bsp.R;
+
 /**
  * メニューActivity
  */
 public class MenuActivity extends Activity {
 
     private String userid = null;
-    public CommGlobals globals = null;
+    public MspApplication globals = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        globals = (CommGlobals) this.getApplication();
+        globals = (MspApplication) this.getApplication();
 
         // Reference to UI elements
         TextView info = findViewById(R.id.txtMenuInfo);
@@ -39,7 +40,7 @@ public class MenuActivity extends Activity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
      //   userid = intent.getStringExtra(MainActivity.LOGIN_USERID);
-        userid = ((CommGlobals) this.getApplication()).getUserId();
+        userid = ((MspApplication) this.getApplication()).getUserId();
         // Capture the layout's TextView and set the string as its text
         info.setText("ご利用ありがとうございます。");
 

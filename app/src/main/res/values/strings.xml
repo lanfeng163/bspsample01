@@ -6,7 +6,10 @@
     <string name="btn_login">ログイン</string>
     <string name="btn_clear">クリア</string>
 
-    <string name="app_info">AliPayとWeChatPayが使えます。「SUNMI」</string>
+    <string name="permission_read_phone_state_rationale">携帯のデバイスID情報を読み込む事を許可してよろしいでしょうか。</string>
+    <string name="permissions_not_granted_read_phone_state">携帯のデバイスID情報を読み込む事ができません。</string>
+
+    <string name="app_info">AliPayとWeChatPayが使えます。「MSP」</string>
 
     <string name="msg_title1">エラー</string>
     <string name="msg_title2">メッセージ</string>
@@ -22,8 +25,8 @@
 
     <string name="menu_group2">確定</string>
 
-    <string name="group2menu1">決済一覧</string>
-    <string name="group2menu2">返金一覧</string>
+    <string name="group2menu1">決済照会</string>
+    <string name="group2menu2">返金照会</string>
 
     <string name="lab_payCp_kbn">決済センター</string>
     <string name="lab_payCp_Nm1">AliPay</string>
@@ -32,7 +35,7 @@
 
     <string name="lab_customId">取引カード情報</string>
 
-    <string name="button_on">起動</string>
+    <string name="button_on">スキャンー</string>
     <string name="button_off">中止</string>
     <string name="button_seed">決済</string>
     <string name="button_clear">クリア</string>
@@ -41,10 +44,24 @@
     <string name="cancel_lab_Amount">返金金額</string>
     <string name="cancel_lab_customId">取引コード情報</string>
 
+    <string name="lab_payDetail_kbn">処理状態：</string>
+    <string name="lab_payDetail_compang">決済会社：</string>
+    <string name="lab_payDetail_amount">処理金額：</string>
+    <string name="lab_payDetail_userId">担当番号：</string>
+    <string name="lab_payDetail_orderId">取引番号：</string>
+    <string name="lab_payDetail_deviceId">処理端末：</string>
+    <string name="lab_payDetail_dateTime">処理時刻：</string>
+
+    <string name="button_print">印刷</string>
+    <string name="button_end">完了</string>
+
     <string name="lab_status">状態:</string>
     <string name="lab_userInfo">ユーザー情報:</string>
 
-    <string name="msp_webapi_url">http://47.74.12.84:80/api/proxy/pay</string>
+    <string name="msp_login_url">http://192.168.31.209:2000/msp/Payment/PostLoginProcess</string>
+    <string name="msp_pay_url">http://192.168.31.209:2000/msp/Payment/PostPaymentProcess</string>
+
+    <string name="msp_webapi_url6">http://47.74.12.84:80/api/proxy/pay</string>
     <string name="msp_webapi_url0">http://192.168.31.88:56957/api/proxy/pay</string>
     <string name="msp_webapi_url1">http://192.168.31.239:3000</string>
     <string name="msp_webapi_url2">http://weather.livedoor.com/forecast/webservice/json/v1</string>
@@ -73,8 +90,7 @@
     <string name="msg0017">処理が成功しました。</string>
 
     <string name="msg0018">先に取引コード情報をスキャンください。</string>
-
-    <string name="msg0019">...</string>
+    <string name="msg0019">デジタル署名のチェックが失敗しました。</string>
     <string name="msg0020">...</string>
     <string name="msg0021">...</string>
 

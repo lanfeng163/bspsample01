@@ -1,4 +1,4 @@
-package jp.co.muroo.systems.bspsample01;
+package jp.co.muroo.systems.bsp;
 
 import org.junit.Test;
 

@@ -1,7 +1,9 @@
-package jp.co.muroo.systems.bspsample01;
+package jp.co.muroo.systems.bsp.comm;
 
 import android.app.AlertDialog;
 import android.content.Context;
+
+import jp.co.muroo.systems.bsp.R;
 
 /**
  * メッセージ処理クラス

@@ -1,4 +1,4 @@
-package jp.co.muroo.systems.bspsample01;
+package jp.co.muroo.systems.bsp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

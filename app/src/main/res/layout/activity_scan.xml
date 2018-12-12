@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanActivity">
+    tools:context=".activity.ScanActivity">
 
     <EditText
         android:id="@+id/txtPayCode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
         android:fadeScrollbars="true"
         android:inputType="text"
@@ -25,45 +25,37 @@
         app:layout_constraintTop_toBottomOf="@+id/lab_PayCardNo" />
 
     <Button
-        android:id="@+id/btn_Start"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:onClick="start"
+        android:id="@+id/btn_Scan"
+        android:layout_width="150dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:onClick="scan"
         android:text="@string/button_on"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPayCode" />
 
     <Button
-        android:id="@+id/btn_Stop"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:onClick="end"
-        android:text="@string/button_off"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_Start"
-        app:layout_constraintStart_toEndOf="@+id/btn_Start" />
-
-    <Button
         android:id="@+id/btn_Seed"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="8dp"
         android:onClick="seed"
         android:text="@string/button_seed"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_Stop"
-        app:layout_constraintStart_toEndOf="@+id/btn_Stop" />
+        android:textSize="24sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_Scan"
+        app:layout_constraintStart_toEndOf="@+id/btn_Scan" />
 
     <Button
         android:id="@+id/btn_Clear"
-        android:layout_width="85dp"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:onClick="clear"
         android:text="@string/button_clear"
-        android:textSize="18sp"
+        android:textSize="24sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/btn_Seed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -79,38 +71,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lab_Info" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lab_PayKbn">
-
-        <RadioButton
-            android:id="@+id/radioButtonPayCpNm1"
-            android:layout_width="182dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/lab_payCp_Nm1"
-            android:textSize="24sp" />
-
-        <RadioButton
-            android:id="@+id/radioButtonPayCpNm2"
-            android:layout_width="182dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/lab_payCp_Nm2"
-            android:textSize="24sp" />
-    </RadioGroup>
-
     <TextView
         android:id="@+id/lab_PayKbn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:text="@string/lab_payCp_kbn"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -121,16 +87,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:text="@string/lab_Amount"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/lab_PayKbn" />
 
     <EditText
         android:id="@+id/txtAmount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="number"
@@ -157,7 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/lab_customId"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -168,22 +135,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/lab_status"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_Start" />
+        app:layout_constraintBottom_toTopOf="@+id/lab_Info"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/lab_Info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
         android:text="@string/lab_userInfo"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewStatus" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!--
     <RelativeLayout

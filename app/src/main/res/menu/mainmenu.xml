@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-tools:context="jp.co.muroo.systems.bspsample01.MenuActivity" >
+tools:context="jp.co.muroo.systems.bsp.activity.MenuActivity" >
 
     <group
         android:id="@+id/meGroup1"
