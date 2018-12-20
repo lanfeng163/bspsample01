@@ -3,8 +3,10 @@ package jp.co.muroo.systems.bsp;
 import android.app.Application;
 import android.util.Log;
 
+import com.sunmi.printerhelper.utils.AidlUtil;
+
 /**
- * 共有データクラス
+ * The Applicationクラス
  */
 public class MspApplication extends Application {
 
@@ -17,6 +19,7 @@ public class MspApplication extends Application {
     private String deviceId;
     private String shopName;
     private String shopInfo;
+    private String shopTel;
 
     //処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細  99：エラー）
     private String resultKbn;
@@ -27,6 +30,7 @@ public class MspApplication extends Application {
     private int processKbn;
 
     //処理結果詳細データをセット　Start
+
     //処理金額
     private int payAmount;
     //決済会社
@@ -35,6 +39,10 @@ public class MspApplication extends Application {
     private String payOrderId;
     //処理時刻
     private String payProcessDateTime;
+    //処理ユーザー
+    private String payUserId;
+    //処理デバイス
+    private String payDeviceId;
 
     //処理結果詳細データをセット　End
 
@@ -50,6 +58,9 @@ public class MspApplication extends Application {
     public void setShopInfo(String shopInfo) {
         this.shopInfo = shopInfo;
     }
+    public String getShopTel() {        return shopTel;    }
+    public void setShopTel(String shopTel) {        this.shopTel = shopTel;    }
+
     public String getResultKbn() {
         return resultKbn;
     }
@@ -66,22 +77,20 @@ public class MspApplication extends Application {
     public void setPayCompany(String payCompany) {
         this.payCompany = payCompany;
     }
-    public String getPayOrderId() {
-        return payOrderId;
-    }
+    public String getPayOrderId() {        return payOrderId;    }
     public void setPayOrderId(String payOrderId) {
         this.payOrderId = payOrderId;
     }
     public String getPayProcessDateTime() {
         return payProcessDateTime;
     }
-    public void setPayProcessDateTime(String payProcessDateTime) {
-        this.payProcessDateTime = payProcessDateTime;
-    }
+    public void setPayProcessDateTime(String payProcessDateTime) {        this.payProcessDateTime = payProcessDateTime;    }
+    public String getPayUserId() {        return payUserId;    }
+    public void setPayUserId(String payUserId) {        this.payUserId = payUserId;    }
+    public String getPayDeviceId() {        return payDeviceId;    }
+    public void setPayDeviceId(String payDeviceId) {        this.payDeviceId = payDeviceId;    }
     public String getServerDigitalSignature() { return serverDigitalSignature; }
-    public void setServerDigitalSignature(String serverDigitalSignature) {
-        this.serverDigitalSignature = serverDigitalSignature;
-    }
+    public void setServerDigitalSignature(String serverDigitalSignature) {        this.serverDigitalSignature = serverDigitalSignature;    }
     public String getToken() {
         return token;
     }
@@ -110,17 +119,33 @@ public class MspApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //Sunmi Scan
         configUncaughtExceptionHandler();
+        //Sunmi Scan
+
+        //Sunmi Print
+        isAidl = true;
+        AidlUtil.getInstance().connectPrinterService(this);
+        //Sunmi Print
     }
 
+    //Sunmi Print
+    private boolean isAidl;
+    public boolean isAidl() {
+        return isAidl;
+    }
+    public void setAidl(boolean aidl) {  isAidl = aidl;    }
+    //Sunmi Print
+
     /**
+     * Sunmi Scan
      * 異常をキャッチします。
      */
     private void configUncaughtExceptionHandler() {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                Log.e(tag, "======-----------configUncaughtExceptionHandler---------------=========" + ex.toString());
+                Log.e(tag, "==------configUncaughtExceptionHandler----Sunmi Scan---==" + ex.toString());
             }
         });
     }

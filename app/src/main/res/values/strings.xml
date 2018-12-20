@@ -1,8 +1,25 @@
 <resources>
-    <string name="app_name">QRコード決済システム</string>
+    <string name="app_name">MSPシステム</string>
+    <string name="app_compay">株式会社ムロオシステムズ</string>
 
-    <string name="lab_userid">ユーザーID：</string>
-    <string name="lab_possword">パスワード：</string>
+    <string name="head_title_name1">ログイン</string>
+    <string name="head_title_name2">メニュー</string>
+
+    <string name="head_title_name3">決済処理</string>
+    <string name="head_title_name4">返金処理</string>
+    <string name="head_title_name5">決済結果</string>
+    <string name="head_title_name6">返金結果</string>
+
+    <string name="head_title_name7">決済一覧</string>
+    <string name="head_title_name8">返金一覧</string>
+    <string name="head_title_name9">決済照会</string>
+    <string name="head_title_name10">返金照会</string>
+
+    <string name="lab_list_startDate">開始日付:</string>
+    <string name="lab_list_endDate">終了日付:</string>
+
+    <string name="lab_userid">ユーザーID:</string>
+    <string name="lab_possword">パスワード:</string>
     <string name="btn_login">ログイン</string>
     <string name="btn_clear">クリア</string>
 
@@ -18,39 +35,24 @@
     <string name="msg_return1">はい</string>
     <string name="msg_return2">いいえ</string>
 
-    <string name="menu_group1">決済</string>
-
-    <string name="group1menu1">決済処理</string>
-    <string name="group1menu2">返金処理</string>
-
-    <string name="menu_group2">確定</string>
-
-    <string name="group2menu1">決済照会</string>
-    <string name="group2menu2">返金照会</string>
-
-    <string name="lab_payCp_kbn">決済センター</string>
-    <string name="lab_payCp_Nm1">AliPay</string>
-    <string name="lab_payCp_Nm2">WeChatPay</string>
     <string name="lab_Amount">決済金額</string>
-
+    <string name="cancel_lab_Amount">返金金額</string>
+    <string name="cancel_lab_customId">取引コード情報</string>
     <string name="lab_customId">取引カード情報</string>
 
     <string name="button_on">スキャンー</string>
-    <string name="button_off">中止</string>
     <string name="button_seed">決済</string>
+    <string name="button_cancel">返金</string>
     <string name="button_clear">クリア</string>
 
-    <string name="button_cancel">返金</string>
-    <string name="cancel_lab_Amount">返金金額</string>
-    <string name="cancel_lab_customId">取引コード情報</string>
-
-    <string name="lab_payDetail_kbn">処理状態：</string>
-    <string name="lab_payDetail_compang">決済会社：</string>
-    <string name="lab_payDetail_amount">処理金額：</string>
-    <string name="lab_payDetail_userId">担当番号：</string>
-    <string name="lab_payDetail_orderId">取引番号：</string>
-    <string name="lab_payDetail_deviceId">処理端末：</string>
-    <string name="lab_payDetail_dateTime">処理時刻：</string>
+    <string name="lab_shopTel">電話:</string>
+    <string name="lab_payDetail_kbn">処理状態:</string>
+    <string name="lab_payDetail_compang">決済会社:</string>
+    <string name="lab_payDetail_amount">処理金額:</string>
+    <string name="lab_payDetail_userId">担当番号:</string>
+    <string name="lab_payDetail_orderId">取引番号:</string>
+    <string name="lab_payDetail_deviceId">処理端末:</string>
+    <string name="lab_payDetail_dateTime">処理時刻:</string>
 
     <string name="button_print">印刷</string>
     <string name="button_end">完了</string>
@@ -60,6 +62,7 @@
 
     <string name="msp_login_url">http://192.168.31.209:2000/msp/Payment/PostLoginProcess</string>
     <string name="msp_pay_url">http://192.168.31.209:2000/msp/Payment/PostPaymentProcess</string>
+    <string name="msp_pay_ist_url">http://192.168.31.209:2000/msp/Payment/PostPayListProcess</string>
 
     <string name="msp_webapi_url6">http://47.74.12.84:80/api/proxy/pay</string>
     <string name="msp_webapi_url0">http://192.168.31.88:56957/api/proxy/pay</string>
@@ -91,12 +94,25 @@
 
     <string name="msg0018">先に取引コード情報をスキャンください。</string>
     <string name="msg0019">デジタル署名のチェックが失敗しました。</string>
-    <string name="msg0020">...</string>
+    <string name="msg0020">有効のコードではありません。</string>
     <string name="msg0021">...</string>
 
     <string name="msg0022">スキャンナーが初期化…</string>
     <string name="msg0023">スキャンナーが停止しました。</string>
 
     <string name="msg0024">送信処理のResponseCodeは200以外になっています。</string>
+
+    <!--instruction Sunmi Print start -->
+    <string name="toast_1">Transaction print,use the AIDL mode!</string>
+    <string name="toast_2">The service has been disconnected!</string>
+    <string name="toast_3">Bluetooth device is unavailable</string>
+    <string name="toast_4">Bluetooth device not detected. Please open Bluetooth!</string>
+    <string name="toast_5">Not Found InnterPrinter!</string>
+    <string name="toast_6">Bluetooth connect failed!</string>
+    <string name="toast_7"> Only a single Qr code is printed for the AIDL mode</string>
+    <string name="toast_8">Now QrCode size must be less than 7!</string>
+    <string name="toast_9">BarCode type or conent error!</string>
+    <!--instruction Sunmi Print end -->
+
 
 </resources>

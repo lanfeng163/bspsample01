@@ -11,7 +11,7 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_dateTime"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView18" />
@@ -29,7 +29,7 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_deviceId"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -47,7 +47,7 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_orderId"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
@@ -65,7 +65,7 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_userId"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
@@ -83,7 +83,7 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_amount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -101,7 +101,7 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_compang"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewKbn" />
@@ -119,10 +119,10 @@
         android:layout_width="81dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lab_payDetail_kbn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewShopInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/textViewPayKbn"
@@ -151,7 +151,7 @@
         android:layout_width="362dp"
         android:layout_height="31dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="会社情報"
         android:textAlignment="textStart"
@@ -164,8 +164,8 @@
         android:id="@+id/buttonPayPrint"
         android:layout_width="75dp"
         android:layout_height="45dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
         android:onClick="printClick"
         android:text="@string/button_print"
         app:layout_constraintStart_toStartOf="parent"
@@ -175,10 +175,28 @@
         android:id="@+id/buttonPayEnd"
         android:layout_width="75dp"
         android:layout_height="45dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginStart="8dp"
         android:onClick="endClick"
         android:text="@string/button_end"
         app:layout_constraintBaseline_toBaselineOf="@+id/buttonPayPrint"
         app:layout_constraintStart_toEndOf="@+id/buttonPayPrint" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="45dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/lab_shopTel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewShopInfo" />
+
+    <TextView
+        android:id="@+id/textViewShopTel"
+        android:layout_width="206dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/textView4" />
 
 </android.support.constraint.ConstraintLayout>

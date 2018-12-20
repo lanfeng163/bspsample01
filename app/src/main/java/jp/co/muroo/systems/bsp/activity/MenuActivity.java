@@ -24,13 +24,14 @@ import jp.co.muroo.systems.bsp.R;
  */
 public class MenuActivity extends Activity {
 
-    private String userid = null;
     public MspApplication globals = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        this.setTitle(R.string.head_title_name2);//タイトルバーの文字列
 
         globals = (MspApplication) this.getApplication();
 
@@ -39,8 +40,6 @@ public class MenuActivity extends Activity {
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-     //   userid = intent.getStringExtra(MainActivity.LOGIN_USERID);
-        userid = ((MspApplication) this.getApplication()).getUserId();
         // Capture the layout's TextView and set the string as its text
         info.setText("ご利用ありがとうございます。");
 
@@ -52,22 +51,22 @@ public class MenuActivity extends Activity {
         List<Map<String, String>> list = new ArrayList<Map<String,String>>();
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("name", getString(R.string.group1menu1));
+        map.put("name", getString(R.string.head_title_name5));
         map.put("id", "1");
         list.add(map);
 
         map = new HashMap<String, String>();
-        map.put("name", getString(R.string.group1menu2));
+        map.put("name", getString(R.string.head_title_name6));
         map.put("id", "2");
         list.add(map);
 
         map = new HashMap<String, String>();
-        map.put("name", getString(R.string.group2menu1));
+        map.put("name", getString(R.string.head_title_name7));
         map.put("id", "3");
         list.add(map);
 
         map = new HashMap<String, String>();
-        map.put("name", getString(R.string.group2menu2));
+        map.put("name", getString(R.string.head_title_name8));
         map.put("id", "4");
         list.add(map);
 
@@ -82,7 +81,6 @@ public class MenuActivity extends Activity {
                 return view;
             }
         };
-
 
         ListView menuList = findViewById(R.id.menuList);
         menuList.setAdapter(adapter);
@@ -128,64 +126,28 @@ public class MenuActivity extends Activity {
                     globals.setProcessKbn(1);   //1:決済　2:返金
                     //    Intent intent = new Intent(this, ScanActivity.class);
                     intent = new Intent(MenuActivity.this, ScanActivity.class);
-                    //intent.putExtra(MainActivity.LOGIN_USERID, userid);
                     startActivity(intent);
                     break;
                 case 2:
                     //返金処理
-                    //Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-
                     globals.setProcessKbn(2);   //1:決済　2:返金
-                    //    Intent intent = new Intent(this, ScanActivity.class);
-                    //intent = new Intent(MenuActivity.this, CancelActivity.class);
                     intent = new Intent(MenuActivity.this, ScanActivity.class);
-                    //intent.putExtra(MainActivity.LOGIN_USERID, userid);
                     startActivity(intent);
                     break;
                 case 3:
-                    Toast.makeText(getApplicationContext(), getString(R.string.group2menu1) + "　は開発中...", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), getString(R.string.group2menu1) + "　は開発中...", Toast.LENGTH_SHORT).show();
+
+                    globals.setProcessKbn(1);   //1:決済照会　2:返金照会
+                    intent = new Intent(MenuActivity.this, PaylistActivity.class);
+                    startActivity(intent);
                     break;
                 case 4:
-                    Toast.makeText(getApplicationContext(), getString(R.string.group2menu2) + "　は開発中...", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), getString(R.string.group2menu2) + "　は開発中...", Toast.LENGTH_SHORT).show();
+                    globals.setProcessKbn(2);   //1:決済照会　2:返金照会
+                    intent = new Intent(MenuActivity.this, PaylistActivity.class);
+                    startActivity(intent);
                     break;
             }
         }
     }
-
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        MenuInflater menuInflater=getMenuInflater();
-        menuInflater.inflate(R.menu.mainmenu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.group1Menu1:
-                //Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-
-                //    Intent intent = new Intent(this, ScanActivity.class);
-                Intent intent = new Intent(this, ScanActivity.class);
-                intent.putExtra(MainActivity.LOGIN_USERID, userid);
-                startActivity(intent);
-                break;
-            case R.id.group1Menu2:
-                Toast.makeText(getApplicationContext(), item.getTitle() + "　は開発中...", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.group2Menu1:
-                Toast.makeText(getApplicationContext(), item.getTitle() + "　は開発中...", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.group2Menu2:
-                Toast.makeText(getApplicationContext(), item.getTitle() + "　は開発中...", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
 }

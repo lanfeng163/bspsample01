@@ -24,7 +24,7 @@ import jp.co.muroo.systems.bsp.comm.CommPayBean;
 import jp.co.muroo.systems.bsp.comm.CommUtil;
 
 /**
- * スキャン　決済送信Activity
+ * 決済・返金処理Activity
  */
 public class ScanActivity extends Activity {
 
@@ -35,7 +35,7 @@ public class ScanActivity extends Activity {
     private TextView statusTextView = null;
     private TextView userInfoTextView = null;
 
-    //1:決済　2:返金
+    //1:決済処理　2:返金処理
     private int processKbn = 0;
 
     public MspApplication mspApp = null;
@@ -244,13 +244,13 @@ public class ScanActivity extends Activity {
     private void setLayout() {
         if (processKbn == 1) {
             //決済
-            ((TextView)findViewById(R.id.lab_PayKbn)).setText(R.string.group1menu1);
+            this.setTitle(R.string.head_title_name3);//タイトルバーの文字列
             ((TextView)findViewById(R.id.lab_PayAmount)).setText(R.string.lab_Amount);
             ((TextView)findViewById(R.id.lab_PayCardNo)).setText(R.string.lab_customId);
             ((Button)findViewById(R.id.btn_Seed)).setText(R.string.button_seed);
         } else {
             //返金
-            ((TextView)findViewById(R.id.lab_PayKbn)).setText(R.string.group1menu2);
+            this.setTitle(R.string.head_title_name4);//タイトルバーの文字列
             ((TextView)findViewById(R.id.lab_PayAmount)).setText(R.string.cancel_lab_Amount);
             ((TextView)findViewById(R.id.lab_PayCardNo)).setText(R.string.cancel_lab_customId);
             ((Button)findViewById(R.id.btn_Seed)).setText(R.string.button_cancel);
@@ -270,7 +270,9 @@ public class ScanActivity extends Activity {
         view.requestFocus();
     }
 
-    //決済センターに送信
+    /**
+     * 決済センターに送信
+     */
     private void doSeed() {
 
         //TODO 決済送信データをセット…
@@ -282,8 +284,14 @@ public class ScanActivity extends Activity {
         if (processKbn == 1) {
             //決済
             payBean.setProcMode("01");//決済
-            //決済QRコードにより、決済センターを決まり
-            payBean.setSystemId(getPaySystemKbn(customDataTxt.getText().toString()));
+            //決済QRコードにより、決済センターを決まり・チェック
+            String kbnStr = checkPaySystemKbn(customDataTxt.getText().toString());
+            if ("-1".equals(kbnStr)) {//エラーです
+                statusTextView.setText(R.string.msg0020);
+                return;
+            } else {
+                payBean.setSystemId(kbnStr);
+            }
         } else {
             //返金
             payBean.setProcMode("02");//返金
@@ -313,20 +321,28 @@ public class ScanActivity extends Activity {
 
     }
 
-    //決済センターを判断
-    private String getPaySystemKbn(String qrCdStr) {
+    /**
+     * QRコードのチェック
+     * @param qrCdStr
+     * @return
+     */
+    private String checkPaySystemKbn(String qrCdStr) {
         /*
         バーコードの区別ルール:
         AliPay ２５～３０からスタート
         WeChat １０～１５からスタート
         */
-        String paySystemKbn = "02";
-        String start2Str = qrCdStr.substring(0, 2);
-        int sCd = Integer.parseInt(start2Str);
-        if (sCd >= 10 && sCd <= 15) {
-            paySystemKbn = "02"; //wechatpay
-        } else if (sCd >= 25 && sCd <= 30) {
-            paySystemKbn = "01";  //alipay
+        String paySystemKbn = "-1";
+        try {
+            String start2Str = qrCdStr.substring(0, 2);
+            int sCd = Integer.parseInt(start2Str);
+            if (sCd >= 10 && sCd <= 15) {
+                paySystemKbn = "02"; //wechatpay
+            } else if (sCd >= 25 && sCd <= 30) {
+                paySystemKbn = "01";  //alipay
+            }
+        } catch (Exception ex) {
+            Log.d("ScanActivity", ex.toString());
         }
         return paySystemKbn;
     }
@@ -413,17 +429,31 @@ public class ScanActivity extends Activity {
      * QRスキャンナー起動（Sunmi）
      */
     private void doScan() {
+        /**
+         * ①
+         * 外部应用在自己的业务代码需要启动扫码的地方使用下面的方式创建Intent，
+         * 然后使用startActivityForResult()调用起商米的扫码模块;
+         */
+        Intent intent = new Intent("com.summi.scan");
+        intent.setPackage("com.sunmi.sunmiqrcodescanner");
+        /*
+         * 使用该方式也可以调用扫码模块
+         *Intent intent = new Intent("com.summi.scan");
+         *intent.setClassName("com.sunmi.sunmiqrcodescanner",
+         "com.sunmi.sunmiqrcodescanner.activity.ScanActivity");
+         */
 
-         // エラー Package("com.sunmi.sunmiqrcodescanner")がありません
-//        Intent intent = new Intent("com.summi.scan");
-//        intent.setPackage("com.sunmi.sunmiqrcodescanner");
+        /**
+         //②
+         // Local srcを利用 com.sunmi.codescanner.activity.ScanActivityを使う
+         //        Intent intent = new Intent();
+         //        intent.setAction("com.sunmi.scan");
+         //        intent.setPackage("com.sunmi.codescanner");
+         */
 
-
-        Intent intent = new Intent();
-        intent.setAction("com.sunmi.scan");
-        intent.setPackage("com.sunmi.codescanner");
-
-        intent.putExtra("CURRENT_PPI", 0X0001);//当前分辨率
+        //扫码模块有一些功能选项，开发者可以通过传递参数控制这些参数，
+        //所有参数都有一个默认值，开发者只要在需要的时候添加这些配置就可以。
+        intent.putExtra("CURRENT_PPI", 0X0002);//当前分辨率
         //M1和V1的最佳是800*480,PPI_1920_1080 = 0X0001;PPI_1280_720 =0X0002;PPI_BEST = 0X0003;
 
         intent.putExtra("PLAY_SOUND", true);// 扫描完成声音提示  默认true
@@ -433,7 +463,13 @@ public class ScanActivity extends Activity {
         intent.putExtra("IDENTIFY_INVERSE_QR_CODE", true);// 识别反色二维码，默认true
         intent.putExtra("IDENTIFY_MORE_CODE", false);// 识别画面中多个二维码，默认false
         intent.putExtra("IS_SHOW_SETTING", true);// 是否显示右上角设置按钮，默认true
-        intent.putExtra("IS_SHOW_ALBUM", true);// 是否显示从相册选择图片按钮，默认true
+        intent.putExtra("IS_SHOW_ALBUM", false);// 是否显示从相册选择图片按钮，默认true
+
+        //JLM Add
+        intent.putExtra("IS_OPEN_LIGHT", true);// 灯模式: false 灯灭; true 灯亮，默认false
+        intent.putExtra("LIGHT_BRIGHT_TIME", 200);//灯亮时间（单位: 毫秒）
+        intent.putExtra("LIGHT_DROWN_TIME", 500);//灯灭时间（单位: 毫秒）
+
         startActivityForResult(intent, START_SCAN);
     }
 
@@ -459,10 +495,13 @@ public class ScanActivity extends Activity {
                 String type = hashMap.get("TYPE");
                 String value = hashMap.get("VALUE");
                 Log.i("onActivityResult", "QRコードのタイプ:" + type);
-                Log.i("onActivityResult", "QRコードのデータ:" +value);
+                Log.i("onActivityResult", "QRコードのデータ:" +value);//refundorder_15434699667033220
 
                 //スキャンしたデータです。
                 customDataTxt.setText(value);
+
+                //決済センターに送信
+                this.doSeed();
 
             }
         }
