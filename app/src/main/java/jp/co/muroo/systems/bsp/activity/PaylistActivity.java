@@ -1,25 +1,36 @@
 package jp.co.muroo.systems.bsp.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jp.co.muroo.systems.bsp.MspApplication;
 import jp.co.muroo.systems.bsp.R;
+import jp.co.muroo.systems.bsp.comm.CommPayDetailBean;
 import jp.co.muroo.systems.bsp.comm.CommUtil;
 
 /**
@@ -33,10 +44,17 @@ public class PaylistActivity extends Activity {
 
     CommUtil commUtil = null;
 
+    private TextView payDateStart = null;
+    private TextView payDateEnd = null;
+    StringBuffer stringBuilderDatetime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paylist);
+
+        payDateStart = findViewById(R.id.txtStartDate);
+        payDateEnd = findViewById(R.id.txtEndDate);
 
         mspApp = (MspApplication) this.getApplication();
 
@@ -45,104 +63,75 @@ public class PaylistActivity extends Activity {
         processKbn =  mspApp.getProcessKbn();
         //処理区分により、画面の文字を初期化
         this.setLayout();
-
-        List<Map<String, String>> list = new ArrayList<Map<String,String>>();
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("name", "大阪");
-        map.put("id", "270000");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "神戸");
-        map.put("id", "280010");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "豊岡");
-        map.put("id", "280020");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "京都");
-        map.put("id", "260010");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "舞鶴");
-        map.put("id", "260020");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "奈良");
-        map.put("id", "290010");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "風屋");
-        map.put("id", "290020");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "和歌山");
-        map.put("id", "300010");
-        list.add(map);
-        map = new HashMap<String, String>();
-        map.put("name", "潮岬");
-        map.put("id", "300020");
-        list.add(map);
-
-        ListView lvCityList = (ListView) findViewById(R.id.payListView);
-
-        String[] from = {"name"};
-        int[] to = {android.R.id.text1};
-        SimpleAdapter adapter = new SimpleAdapter(PaylistActivity.this, list, android.R.layout.simple_expandable_list_item_1, from, to);
-
-        lvCityList.setAdapter(adapter);
-        lvCityList.setOnItemClickListener(new ListItemClickListener());
-
+        /*
         //Jsonを作成
-        JSONObject json = this.getLoginJson(mspApp);
+        JSONObject json = this.setSearchJson();
         Log.i("PaylistActivity","送信Json is: " + json.toString());
         //ログイン送信は非同期で処理します
-    //    new DoGetListData().execute(json);
+        new DoGetListData().execute(json);
+        */
+        //For test
+        this.setPayList(null);
     }
 
     /**
      * JSONデータを作成
      * @return
      */
-    private JSONObject getLoginJson(MspApplication mspApp) {
+    private JSONObject setSearchJson() {
 
         JSONObject json = new JSONObject();
         try {
+            //デジタル署名を作成
+            mspApp.setDigitalSignature(commUtil.getDigitalSignatureStr());
+
             json.put("terminalId", mspApp.getDeviceId());
             json.put("userId", mspApp.getUserId());
-            json.put("UserKey", mspApp.getDigitalSignature());
+            json.put("token", mspApp.getToken());
+            json.put("userKey", mspApp.getDigitalSignature());
+            if (processKbn == 1) { //決済
+                json.put("procMode", "01");
+            } else {  //返金
+                json.put("procMode", "02");
+            }
+            json.put("payStartDateTime", payDateStart.getText().toString());
+            json.put("payEndDateTime", payDateEnd.getText().toString());
+
         } catch (JSONException e) {
-            Log.d("PaylistActivity", e.getLocalizedMessage());
+            Log.d("PaylistActivity", e.toString());
         }
         return json;
     }
 
     /**
-     * リストが選択されたときの処理が記述されたメンバクラス。
+     * リストが選択されたときの処理
      */
     private class ListItemClickListener implements AdapterView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Map<String, String> item = (Map<String, String>) parent.getItemAtPosition(position);
-            String cityName = item.get("name");
-            String cityId = item.get("id");
-
+            //区分をセット
             if (processKbn == 1) { //決済
                 mspApp.setResultKbn("12");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
             } else {  //返金
                 mspApp.setResultKbn("22");
             }
+            //選択した行Noを取得
+            Map<String, String> item = (Map<String, String>) parent.getItemAtPosition(position);
+            String lineIdStr = item.get("lineId");
+            int lineId = Integer.parseInt(lineIdStr);
+
+            //明細行データを取得
+            CommPayDetailBean payBean = mspApp.getPayDataList().get(lineId);
 
             //詳細画面へ移動します
             Intent intent = new Intent(PaylistActivity.this, DetailActivity.class);
-            intent.putExtra("payCompany", cityName);
-            intent.putExtra("payAmount", cityId);
-            intent.putExtra("payUserId", "test6");
-            intent.putExtra("payOrderId", "test6");
-            intent.putExtra("payDeviceId", "test6");
-            intent.putExtra("payDateTime", "test6");
+            intent.putExtra("payCompany", payBean.getPayCompany());
+            intent.putExtra("payAmount", payBean.getPayAmount());
+            intent.putExtra("payUserId", payBean.getPayUserId());
+            intent.putExtra("payOrderId", payBean.getPayOrderId());
+            intent.putExtra("payDeviceId", payBean.getPayDeviceId());
+            intent.putExtra("payDateTime", payBean.getPayDateTime());
 
             startActivity(intent);
         }
@@ -159,19 +148,99 @@ public class PaylistActivity extends Activity {
             //返金
             this.setTitle(R.string.head_title_name8);//タイトルバーの文字列
         }
+        this.setInitDatetime();
     }
 
+    /**
+     * 明細データをセット
+     * @param jsonResult
+     * @return
+     * @throws JSONException
+     */
+    public void setPayList(JSONObject jsonResult) {
 
-    private void setPayList(JSONObject jsonResult) throws JSONException {
 
+        //TODO setPayList(JSONObject jsonResult)
+
+        // ListViewに表示する項目を生成
+        ArrayList<CommPayDetailBean> beanListData = new ArrayList<>();
+        List<Map<String, String>> listData = new ArrayList<Map<String,String>>();
+
+        for (int i = 0; i < 3; i++) {
+            //jsonResult から　code の文字を取得
+            /*
+            String viewPayAmount = jsonResult.getString("Amount");
+            viewPayAmount = "¥" + viewPayAmount +"円";
+
+            String viewPayOrderId = jsonResult.getString("ProcId");
+            String viewPayDateTime = jsonResult.getString("ProcessDateTime");
+            String viewPayUserId = jsonResult.getString("UserId");
+            String viewPayDeviceId = jsonResult.getString("TerminalId");
+
+            String payCompanyKbn = jsonResult.getString("SystemId");
+            String payCompanyNm = commUtil.getPayCompanyNm(payCompanyKbn);
+*/
+//for test
+            String payAmount = "¥234円";
+            String payOrderId = "12201812231234567"+i;
+            String payDateTime = "2018-12-20 12:20:30";
+            String payUserId = "UserId001";
+            String payDeviceId = "12201812231234567";
+            String payCompanyKbn = "01";
+            String payCompanyNm = commUtil.getPayCompanyNm(payCompanyKbn);
+
+            HashMap<String,String> data = new HashMap<>();
+            // 引数には、(名前,実際の値)という組合せで指定します　名前はSimpleAdapterの引数で使用します
+            data.put("payOrderId", payOrderId);
+            data.put("payAmount", payAmount);
+            data.put("lineId", Integer.toString(i));
+            data.put("payCompanyNm", payCompanyNm);
+            data.put("payDateTime", payDateTime);
+            listData.add(data);
+
+            CommPayDetailBean payBean = new CommPayDetailBean();
+            payBean.setPayAmount(payAmount);
+            payBean.setPayOrderId(payOrderId);
+            payBean.setPayDateTime(payDateTime);
+            payBean.setPayUserId(payUserId);
+            payBean.setPayDeviceId(payDeviceId);
+            payBean.setPayCompany(payCompanyNm);
+            beanListData.add(payBean);
+        }
+
+        if (beanListData.isEmpty()) {
+            //データがなしのメッセージを表示
+            Toast.makeText(PaylistActivity.this, getString(R.string.msg0021), Toast.LENGTH_LONG).show();
+        } else {
+            //明細データを保存
+            mspApp.setPayDataList(beanListData);
+
+            /*
+             * Adapterを生成
+             * R.layout.custom_list_layout : リストビュー自身のレイアウト。今回は自作。
+             * new String[]{***} : 受け渡し元項目名
+             * new int[]{***} : 受け渡し先ID
+             */
+            SimpleAdapter simpleAdapter = new SimpleAdapter(this,
+                    listData, // 使用するデータ
+                    R.layout.pay_list_item, // 自作したレイアウト
+                    new String[]{"payOrderId","payAmount","lineId","payCompanyNm", "payDateTime"}, // どの項目を
+                    new int[]{R.id.payListOrderId, R.id.payListAmount, R.id.payListId, R.id.payListCompany, R.id.payListDateTime} // どのidの項目に入れるか
+            );
+            // idがlistのListViewを取得
+            ListView listView = (ListView) findViewById(R.id.payListView);
+            listView.setAdapter(simpleAdapter);
+            listView.setOnItemClickListener(new ListItemClickListener());
+        }
     }
+
 
     /**
      * 開始日付をセット
      * @param view
      */
     public void selectStartDate(View view) {
-
+        this.showCalendar(payDateStart);
     }
 
     /**
@@ -179,7 +248,54 @@ public class PaylistActivity extends Activity {
      * @param view
      */
     public void selectEndDate(View view) {
+        this.showCalendar(payDateEnd);
+    }
 
+
+    /**
+     * 初期化の日付と時間をセット
+     */
+    private void setInitDatetime() {
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00");
+        String dateStr = sdf.format(date);
+        payDateStart.setText(dateStr);//yyMM-dd-HH mm:ss
+
+        sdf = new SimpleDateFormat("yyyy-MM-dd 23:59");
+        dateStr = sdf.format(date);
+        payDateEnd.setText(dateStr);//yyMM-dd-HH mm:ss
+
+    }
+
+    /**
+     * カレンダーを表示「日付と時間を選択」
+     * @param dateView
+     */
+    private void showCalendar(TextView dateView) {
+
+        Calendar c = Calendar.getInstance();
+        Dialog dateDialog = new DatePickerDialog(PaylistActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker arg0, int year, int month, int day) {
+                stringBuilderDatetime = new StringBuffer("");
+                stringBuilderDatetime.append(year + "-" + ((month+1) < 10 ? "0"+ (month+1) : (month+1)+"") + "-" + (day < 10 ? "0"+ day : day));
+
+                Calendar time = Calendar.getInstance();
+                Dialog timeDialog = new TimePickerDialog(PaylistActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        stringBuilderDatetime.append(" " + (hourOfDay < 10 ? "0"+ hourOfDay : hourOfDay) + ":"+(minute < 10 ? "0"+ minute : minute));
+                        //項目にデータをセット
+                        dateView.setText(stringBuilderDatetime);//yyMM-dd-HH mm:ss
+                    }
+                }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true);
+                timeDialog.show();
+            }
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        dateDialog.show();
     }
 
 
@@ -234,11 +350,9 @@ public class PaylistActivity extends Activity {
             //処理が完了
             if (mspApp.getResultKbn() != null && !("99").equals(mspApp.getResultKbn())) {
                 //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
-                //結果画面に遷移します。
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                startActivity(intent);
             } else {
-                //
+                //異常メッセージを表示
+                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -255,17 +369,11 @@ public class PaylistActivity extends Activity {
 
             if ("01".equals(resultCode)) {
                 //成功
+
                 String tokenStr = jsonResult.getString("Token");
-                String shopNameStr = jsonResult.getString("ShopName");
-                String shopInfo = jsonResult.getString("ShopAddress");
-                String shopTel = jsonResult.getString("ShopTel");
                 String serverKeyStr = jsonResult.getString("ServerKey");
-                //    String processDateTimeStr = rootJSON.getString("ProcessDateTime");
 
                 //基本データをセット存する
-                mspApp.setShopName(shopNameStr);
-                mspApp.setShopInfo(shopInfo);
-                mspApp.setShopTel(shopTel);
                 mspApp.setToken(tokenStr);
                 mspApp.setServerDigitalSignature(serverKeyStr);
 
@@ -275,6 +383,9 @@ public class PaylistActivity extends Activity {
                     resultMessage = getString(R.string.msg0019);
                 } else {
                     mspApp.setResultKbn("00");//WebAPI処理 正常
+
+                    //明細データをセット
+                    setPayList(jsonResult);
                 }
             } else {
                 //WebAPI処理　失敗

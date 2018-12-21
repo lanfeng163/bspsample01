@@ -202,19 +202,13 @@ public class ScanActivity extends Activity {
 
             if ("01".equals(resultCode)) {
                 //成功
-                String payCompanyKbn = "";
                 mspApp.setToken(jsonResult.getString("Token"));
                 mspApp.setPayOrderId(jsonResult.getString("ProcId"));
                 mspApp.setPayProcessDateTime(jsonResult.getString("ProcessDateTime"));
-                payCompanyKbn = jsonResult.getString("SystemId");
 
-                if (payCompanyKbn.equals("01")) {
-                    mspApp.setPayCompany("ALi Pay");
-                } else if (payCompanyKbn.equals("02")) {
-                    mspApp.setPayCompany("WeChat Pay");
-                } else {
-                    mspApp.setPayCompany("PayCompany 不明");
-                }
+                String payCompanyKbn = jsonResult.getString("SystemId");
+                mspApp.setPayCompany(commUtil.getPayCompanyNm(payCompanyKbn));
+
                 if (processKbn == 1) { //決済
                     mspApp.setResultKbn("11");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
                 } else {  //返金

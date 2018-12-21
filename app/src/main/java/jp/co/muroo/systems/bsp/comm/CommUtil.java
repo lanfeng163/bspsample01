@@ -29,6 +29,20 @@ public class CommUtil {
     }
 
     /**
+     * 決済センター名前を取得
+     * @return
+     */
+    public String getPayCompanyNm(String kbn) {
+        String payCompanyNm = "";
+        if (kbn.equals("01")) {
+            payCompanyNm = "ALi Pay";
+        } else if (kbn.equals("02")) {
+            payCompanyNm = "WeChat Pay";
+        }
+        return payCompanyNm;
+    }
+
+    /**
      * デジタル署名
      * @return
      */

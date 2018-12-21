@@ -76,17 +76,17 @@ public class DetailActivity extends Activity {
 
         //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
         if ("11".equals(mspApp.getResultKbn())) {
-            viewPayKbn.setText("支払成功");
+            viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value1));
             this.setTitle(R.string.head_title_name5);//タイトルバーの文字列
         } else if ("21".equals(mspApp.getResultKbn())) {
+            viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value2));
             this.setTitle(R.string.head_title_name6);//タイトルバーの文字列
-            viewPayKbn.setText("返金成功");
         } else if ("12".equals(mspApp.getResultKbn())) {
+            viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value3));
             this.setTitle(R.string.head_title_name9);//タイトルバーの文字列
-            viewPayKbn.setText("支払完了");
         } else if ("22".equals(mspApp.getResultKbn())) {
+            viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value4));
             this.setTitle(R.string.head_title_name10);//タイトルバーの文字列
-            viewPayKbn.setText("返金完了");
         }
         viewPayCompany.setText(mspApp.getPayCompany());
         viewPayAmount.setText(payAmount);
@@ -110,10 +110,20 @@ public class DetailActivity extends Activity {
      */
     public void endClick(View view) {
 
-        this.clearPayedInfo();
+        //遷移先に戻る
+        Intent intent = null;
 
-        //結果画面に遷移します。
-        Intent intent = new Intent(getApplicationContext(), ScanActivity.class);
+        //遷移先により、データをセット Start
+        if ("12".equals(mspApp.getResultKbn()) || "22".equals(mspApp.getResultKbn())) {
+            //一覧画面からの場合
+            intent = new Intent(getApplicationContext(), PaylistActivity.class);
+        } else {
+            //処理画面からの場合
+            intent = new Intent(getApplicationContext(), ScanActivity.class);
+        }
+        //遷移先により、データをセット End
+
+        this.clearPayedInfo();
         startActivity(intent);
     }
 
@@ -139,27 +149,27 @@ public class DetailActivity extends Activity {
         //    AidlUtil.getInstance().print1Line();
             AidlUtil.getInstance().printText(mspApp.getShopName(), 48, 1,true, false);
             AidlUtil.getInstance().printText(mspApp.getShopInfo(), 28, 0,false, false);
-            AidlUtil.getInstance().printText("電話："+ mspApp.getShopTel(), 26, 0,false, false);
-            AidlUtil.getInstance().printText("処理時刻：" + mspApp.getPayProcessDateTime(), 24,  0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_shopTel) + mspApp.getShopTel(), 26, 0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_payDetail_dateTime) + mspApp.getPayProcessDateTime(), 24,  0,false, false);
 
             //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
-            String rKbnStr = "処理状態：";
+            String rKbnStr = getString(R.string.lab_payDetail_kbn);
             if ("11".equals(mspApp.getResultKbn())) {
-                AidlUtil.getInstance().printText(rKbnStr+"支払成功", 24,  0,false, false);
+                AidlUtil.getInstance().printText(rKbnStr+getString(R.string.lab_payDetail_kbn_value1), 24,  0,false, false);
             } else if ("21".equals(mspApp.getResultKbn())) {
-                AidlUtil.getInstance().printText(rKbnStr+"返金成功", 24,  0,false, false);
+                AidlUtil.getInstance().printText(rKbnStr+getString(R.string.lab_payDetail_kbn_value2), 24,  0,false, false);
             } else if ("12".equals(mspApp.getResultKbn())) {
-                AidlUtil.getInstance().printText(rKbnStr+"支払詳細", 24,  0,false, false);
+                AidlUtil.getInstance().printText(rKbnStr+getString(R.string.lab_payDetail_kbn_value3), 24,  0,false, false);
             } else if ("22".equals(mspApp.getResultKbn())) {
-                AidlUtil.getInstance().printText(rKbnStr+"返金詳細", 24,  0,false, false);
+                AidlUtil.getInstance().printText(rKbnStr+getString(R.string.lab_payDetail_kbn_value4), 24,  0,false, false);
             }
-            AidlUtil.getInstance().printText("決済会社：" + mspApp.getPayCompany(), 24,  0,false, false);
-            AidlUtil.getInstance().printText("処理金額：" + payAmount, 28,  0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_payDetail_compang) + mspApp.getPayCompany(), 24,  0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_payDetail_amount) + payAmount, 28,  0,false, false);
 
             AidlUtil.getInstance().printText("--------------------------------", 24, 1,false, false);
-            AidlUtil.getInstance().printText("担当番号：" + mspApp.getUserId(), 24,  0,false, false);
-            AidlUtil.getInstance().printText("取引番号：" + mspApp.getPayOrderId(), 24,  0,false, false);
-            AidlUtil.getInstance().printText("処理端末：" + mspApp.getDeviceId(), 24,  0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_payDetail_userId) + mspApp.getUserId(), 24,  0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_payDetail_orderId) + mspApp.getPayOrderId(), 24,  0,false, false);
+            AidlUtil.getInstance().printText(getString(R.string.lab_payDetail_deviceId) + mspApp.getDeviceId(), 24,  0,false, false);
             AidlUtil.getInstance().printText("--------------------------------", 24, 1,false, false);
 
             AidlUtil.getInstance().printQr(mspApp.getPayOrderId(), 6,3);//QRコード

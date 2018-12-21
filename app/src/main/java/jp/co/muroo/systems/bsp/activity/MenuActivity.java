@@ -51,12 +51,12 @@ public class MenuActivity extends Activity {
         List<Map<String, String>> list = new ArrayList<Map<String,String>>();
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("name", getString(R.string.head_title_name5));
+        map.put("name", getString(R.string.head_title_name3));
         map.put("id", "1");
         list.add(map);
 
         map = new HashMap<String, String>();
-        map.put("name", getString(R.string.head_title_name6));
+        map.put("name", getString(R.string.head_title_name4));
         map.put("id", "2");
         list.add(map);
 

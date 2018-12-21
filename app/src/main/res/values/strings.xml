@@ -7,6 +7,7 @@
 
     <string name="head_title_name3">決済処理</string>
     <string name="head_title_name4">返金処理</string>
+
     <string name="head_title_name5">決済結果</string>
     <string name="head_title_name6">返金結果</string>
 
@@ -15,8 +16,8 @@
     <string name="head_title_name9">決済照会</string>
     <string name="head_title_name10">返金照会</string>
 
-    <string name="lab_list_startDate">開始日付:</string>
-    <string name="lab_list_endDate">終了日付:</string>
+    <string name="lab_list_startDate">開始時刻:</string>
+    <string name="lab_list_endDate">終了時刻:</string>
 
     <string name="lab_userid">ユーザーID:</string>
     <string name="lab_possword">パスワード:</string>
@@ -53,6 +54,11 @@
     <string name="lab_payDetail_orderId">取引番号:</string>
     <string name="lab_payDetail_deviceId">処理端末:</string>
     <string name="lab_payDetail_dateTime">処理時刻:</string>
+
+    <string name="lab_payDetail_kbn_value1">支払成功</string>
+    <string name="lab_payDetail_kbn_value2">返金成功:</string>
+    <string name="lab_payDetail_kbn_value3">支払完了</string>
+    <string name="lab_payDetail_kbn_value4">返金完了</string>
 
     <string name="button_print">印刷</string>
     <string name="button_end">完了</string>
@@ -95,7 +101,7 @@
     <string name="msg0018">先に取引コード情報をスキャンください。</string>
     <string name="msg0019">デジタル署名のチェックが失敗しました。</string>
     <string name="msg0020">有効のコードではありません。</string>
-    <string name="msg0021">...</string>
+    <string name="msg0021">データが存在しません。</string>
 
     <string name="msg0022">スキャンナーが初期化…</string>
     <string name="msg0023">スキャンナーが停止しました。</string>

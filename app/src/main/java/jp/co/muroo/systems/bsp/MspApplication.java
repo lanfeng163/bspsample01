@@ -5,6 +5,11 @@ import android.util.Log;
 
 import com.sunmi.printerhelper.utils.AidlUtil;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import jp.co.muroo.systems.bsp.comm.CommPayDetailBean;
+
 /**
  * The Applicationクラス
  */
@@ -46,6 +51,11 @@ public class MspApplication extends Application {
 
     //処理結果詳細データをセット　End
 
+    //一覧画面の明細データ
+    ArrayList<CommPayDetailBean> payDataList = new ArrayList<>();
+
+    public ArrayList<CommPayDetailBean> getPayDataList() {        return payDataList;    }
+    public void setPayDataList(ArrayList<CommPayDetailBean> payDataList) {        this.payDataList = payDataList;    }
     public String getShopName() {
         return shopName;
     }
