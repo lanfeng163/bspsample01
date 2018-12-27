@@ -7,39 +7,42 @@ android:layout_height="match_parent">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/payListOrderId"
             android:layout_width="match_parent"
-            android:layout_height="27dp"
-            android:paddingLeft="8dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
             android:text="取引番号"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size1" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/payListAmount"
-            android:layout_width="191dp"
+            android:layout_width="161dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
+            android:paddingLeft="16dp"
             android:text="金額"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size1" />
         <TextView
             android:id="@+id/payListId"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="LineID"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_small"/>
+
         <TextView
             android:id="@+id/payListCompany"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="40dp"
+            android:paddingLeft="25dp"
             android:text="決済会社"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size1" />
     </LinearLayout>
 
     <LinearLayout
@@ -50,9 +53,9 @@ android:layout_height="match_parent">
             android:id="@+id/payListDateTime"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="8dp"
+            android:paddingLeft="16dp"
             android:text="処理日付"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size1"/>
     </LinearLayout>
 
 </LinearLayout>

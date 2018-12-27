@@ -2,12 +2,8 @@ package jp.co.muroo.systems.bsp;
 
 import android.app.Application;
 import android.util.Log;
-
 import com.sunmi.printerhelper.utils.AidlUtil;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import jp.co.muroo.systems.bsp.comm.CommPayDetailBean;
 
 /**

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.printerhelper.utils.AidlUtil;
@@ -30,6 +31,8 @@ public class DetailActivity extends Activity {
     private TextView viewPayOrderId = null;
     private TextView viewPayDeviceId = null;
     private TextView viewPayDateTime = null;
+
+    private Button buttonCancel = null;
 
     private  String payAmount = null;
 
@@ -70,6 +73,8 @@ public class DetailActivity extends Activity {
         viewPayDeviceId = findViewById(R.id.textViewPayDeviceId);
         viewPayDateTime = findViewById(R.id.textViewPayDateTime);
 
+        buttonCancel = findViewById(R.id.buttonPayCancel);
+
         viewShopNm.setText(mspApp.getShopName());
         viewShopInfo.setText(mspApp.getShopInfo());
         viewShopTel.setText(mspApp.getShopTel());
@@ -78,15 +83,25 @@ public class DetailActivity extends Activity {
         if ("11".equals(mspApp.getResultKbn())) {
             viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value1));
             this.setTitle(R.string.head_title_name5);//タイトルバーの文字列
+            // ボタンが利用不可
+            buttonCancel.setVisibility(View.GONE);
         } else if ("21".equals(mspApp.getResultKbn())) {
             viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value2));
             this.setTitle(R.string.head_title_name6);//タイトルバーの文字列
+            // ボタンが利用不可
+            buttonCancel.setVisibility(View.GONE);
         } else if ("12".equals(mspApp.getResultKbn())) {
             viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value3));
             this.setTitle(R.string.head_title_name9);//タイトルバーの文字列
+            // ボタンを表示する
+            //buttonCancel.setVisibility(View.VISIBLE);
+            // ボタンが利用不可
+            buttonCancel.setVisibility(View.GONE);
         } else if ("22".equals(mspApp.getResultKbn())) {
             viewPayKbn.setText(getString(R.string.lab_payDetail_kbn_value4));
             this.setTitle(R.string.head_title_name10);//タイトルバーの文字列
+            // ボタンが利用不可
+            buttonCancel.setVisibility(View.GONE);
         }
         viewPayCompany.setText(mspApp.getPayCompany());
         viewPayAmount.setText(payAmount);
@@ -119,13 +134,22 @@ public class DetailActivity extends Activity {
             intent = new Intent(getApplicationContext(), PaylistActivity.class);
         } else {
             //処理画面からの場合
-            intent = new Intent(getApplicationContext(), ScanActivity.class);
+            intent = new Intent(getApplicationContext(), PayActivity.class);
         }
         //遷移先により、データをセット End
 
         this.clearPayedInfo();
         startActivity(intent);
     }
+
+    /**
+     * 返金ボタンの処理
+     * @param view
+     */
+    public void cancelClick(View view) {
+
+    }
+
 
     private void clearPayedInfo() {
         mspApp.setResultKbn("");

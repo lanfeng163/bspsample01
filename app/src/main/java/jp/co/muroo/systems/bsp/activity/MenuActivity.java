@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,26 +86,6 @@ public class MenuActivity extends Activity {
         menuList.setOnItemClickListener(new ListItemClickListener());
     }
 
-    //フォントサイズを設定できるSimpleAdapter
-//    private class MySimpleAdapter extends SimpleAdapter {
-//        public MySimpleAdapter(Context context, List<Map<String, String>> items, int resource, String[] from, int[] to) {
-//            super(context, items, resource, from, to);
-//        }
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//            TextView view = (TextView)super.getView(position, convertView, parent);
-//            view.setTextSize(24);
-//            view.setHeight(50);
-//            view.setMinimumHeight(50);
-//            if (position % 2 == 0) {
-//                view.setBackgroundColor(Color.BLACK);
-//            } else {
-//                view.setBackgroundColor(Color.DKGRAY);
-//            }
-//            return view;
-//        }
-//    }
-
     //リストが選択されたときの処理が記述されたメンバクラス。
     private class ListItemClickListener implements AdapterView.OnItemClickListener {
 
@@ -124,14 +103,14 @@ public class MenuActivity extends Activity {
                     //Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
 
                     globals.setProcessKbn(1);   //1:決済　2:返金
-                    //    Intent intent = new Intent(this, ScanActivity.class);
-                    intent = new Intent(MenuActivity.this, ScanActivity.class);
+                    //    Intent intent = new Intent(this, PayActivity.class);
+                    intent = new Intent(MenuActivity.this, PayActivity.class);
                     startActivity(intent);
                     break;
                 case 2:
                     //返金処理
                     globals.setProcessKbn(2);   //1:決済　2:返金
-                    intent = new Intent(MenuActivity.this, ScanActivity.class);
+                    intent = new Intent(MenuActivity.this, PayActivity.class);
                     startActivity(intent);
                     break;
                 case 3:

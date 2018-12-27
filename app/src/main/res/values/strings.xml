@@ -3,7 +3,7 @@
     <string name="app_compay">株式会社ムロオシステムズ</string>
 
     <string name="head_title_name1">ログイン</string>
-    <string name="head_title_name2">メニュー</string>
+    <string name="head_title_name2">MurooSystems Pay</string>
 
     <string name="head_title_name3">決済処理</string>
     <string name="head_title_name4">返金処理</string>
@@ -21,13 +21,14 @@
 
     <string name="lab_userid">ユーザーID:</string>
     <string name="lab_possword">パスワード:</string>
+    <string name="chk_possword_visable">パスワードを表示します</string>
     <string name="btn_login">ログイン</string>
     <string name="btn_clear">クリア</string>
 
     <string name="permission_read_phone_state_rationale">携帯のデバイスID情報を読み込む事を許可してよろしいでしょうか。</string>
     <string name="permissions_not_granted_read_phone_state">携帯のデバイスID情報を読み込む事ができません。</string>
 
-    <string name="app_info">AliPayとWeChatPayが使えます。「MSP」</string>
+    <string name="app_info">AliPayとWeChatPayが使えます「MSP」</string>
 
     <string name="msg_title1">エラー</string>
     <string name="msg_title2">メッセージ</string>
@@ -56,55 +57,46 @@
     <string name="lab_payDetail_dateTime">処理時刻:</string>
 
     <string name="lab_payDetail_kbn_value1">支払成功</string>
-    <string name="lab_payDetail_kbn_value2">返金成功:</string>
+    <string name="lab_payDetail_kbn_value2">返金成功</string>
     <string name="lab_payDetail_kbn_value3">支払完了</string>
     <string name="lab_payDetail_kbn_value4">返金完了</string>
 
     <string name="button_print">印刷</string>
     <string name="button_end">完了</string>
 
-    <string name="lab_status">状態:</string>
-    <string name="lab_userInfo">ユーザー情報:</string>
+    <string name="msp_login_url">http://192.168.31.209:2000/msp/LoginApi/PostLoginProcess</string>
+    <string name="msp_pay_url">http://192.168.31.209:2000/msp/PaymentApi/PostPaymentProcess</string>
+    <string name="msp_pay_ist_url">http://192.168.31.209:2000/msp/SearchApi/PostSearchTradeProcess</string>
 
-    <string name="msp_login_url">http://192.168.31.209:2000/msp/Payment/PostLoginProcess</string>
-    <string name="msp_pay_url">http://192.168.31.209:2000/msp/Payment/PostPaymentProcess</string>
-    <string name="msp_pay_ist_url">http://192.168.31.209:2000/msp/Payment/PostPayListProcess</string>
-
-    <string name="msp_webapi_url6">http://47.74.12.84:80/api/proxy/pay</string>
-    <string name="msp_webapi_url0">http://192.168.31.88:56957/api/proxy/pay</string>
-    <string name="msp_webapi_url1">http://192.168.31.239:3000</string>
-    <string name="msp_webapi_url2">http://weather.livedoor.com/forecast/webservice/json/v1</string>
-
-    <string name="msg0001">ユーザーIDを入力ください。</string>
-    <string name="msg0002">パスワードを入力ください。</string>
-    <string name="msg0003">ユーザーIDが存在しません。</string>
-    <string name="msg0004">パスワードが違うです。</string>
-    <string name="msg0005">決済センターに送信してよろしいでしょうか。</string>
-
-    <string name="msg0006">先に決済センター名を選択ください。</string>
+    <string name="msg0001">ユーザーIDを入力してください</string>
+    <string name="msg0002">パスワードを入力してください</string>
+    <string name="msg0003">異常終了しました、管理者に連絡してください。</string>
+    <string name="msg0004">デバイスIDを取得する際に失敗しました。</string>
+    <string name="msg0005">デバイスIDが取得できません。</string>
+    <string name="msg0006">金額を入力してください</string>
     <string name="msg0007">先に金額を入力ください。</string>
     <string name="msg0008">先に取引カード情報をスキャンください。</string>
 
-    <string name="msg0009">スキャンナーが中止しました。</string>
-    <string name="msg0010">画面が初期化しました。</string>
-    <string name="msg0011">スキャンナーが起動していません。</string>
+    <string name="msg0009">コードを入力してください</string>
+    <string name="msg0010">データが有りません。</string>
+    <string name="msg0011">…</string>
 
-    <string name="msg0012">送信しました。サーバー側に処理中…</string>
-    <string name="msg0013">処理がキャンセルしました。</string>
+    <string name="msg0012">送信しました。少々お待ちください。</string>
+    <string name="msg0013">…</string>
 
-    <string name="msg0014">EMDKManagerを初期化する際に失敗しました。</string>
+    <string name="msg0014">…</string>
 
     <string name="msg0015">送信処理が異常発生しました。</string>
     <string name="msg0016">送信結果JSONの処理が異常終了しました。</string>
-    <string name="msg0017">処理が成功しました。</string>
+    <string name="msg0017">…</string>
 
     <string name="msg0018">先に取引コード情報をスキャンください。</string>
     <string name="msg0019">デジタル署名のチェックが失敗しました。</string>
     <string name="msg0020">有効のコードではありません。</string>
-    <string name="msg0021">データが存在しません。</string>
+    <string name="msg0021">…</string>
 
-    <string name="msg0022">スキャンナーが初期化…</string>
-    <string name="msg0023">スキャンナーが停止しました。</string>
+    <string name="msg0022">…</string>
+    <string name="msg0023">…</string>
 
     <string name="msg0024">送信処理のResponseCodeは200以外になっています。</string>
 
@@ -120,5 +112,20 @@
     <string name="toast_9">BarCode type or conent error!</string>
     <!--instruction Sunmi Print end -->
 
+    <string name="muroo_key_str0">0</string>
+    <string name="muroo_key_str1">1</string>
+    <string name="muroo_key_str2">2</string>
+    <string name="muroo_key_str3">3</string>
+    <string name="muroo_key_str4">4</string>
+    <string name="muroo_key_str5">5</string>
+    <string name="muroo_key_str6">6</string>
+    <string name="muroo_key_str7">7</string>
+    <string name="muroo_key_str8">8</string>
+    <string name="muroo_key_str9">9</string>
+
+    <string name="muroo_key_str00">00</string>
+    <string name="muroo_key_str_bs">🔙</string>
+    <string name="muroo_key_str_ac">AC</string>
+    <string name="muroo_key_str_et">Enter</string>
 
 </resources>

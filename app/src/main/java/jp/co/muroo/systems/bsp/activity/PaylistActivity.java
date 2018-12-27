@@ -7,16 +7,17 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,25 +56,31 @@ public class PaylistActivity extends Activity {
 
         payDateStart = findViewById(R.id.txtStartDate);
         payDateEnd = findViewById(R.id.txtEndDate);
-
         mspApp = (MspApplication) this.getApplication();
-
         commUtil = CommUtil.getInstance();
-
         processKbn =  mspApp.getProcessKbn();
+
         //処理区分により、画面の文字を初期化
         this.setLayout();
-        /*
+
+        //onChangedをセット
+        payDateStart.addTextChangedListener(new DateTextWatcher((TextView)payDateStart));
+        payDateEnd.addTextChangedListener(new DateTextWatcher((TextView)payDateEnd));
+
+        //明細データを検索処理
+        this.doSearch();
+    }
+    /**
+     * 明細データを検索処理
+     * @return
+     */
+    private void doSearch() {
         //Jsonを作成
         JSONObject json = this.setSearchJson();
         Log.i("PaylistActivity","送信Json is: " + json.toString());
         //ログイン送信は非同期で処理します
         new DoGetListData().execute(json);
-        */
-        //For test
-        this.setPayList(null);
     }
-
     /**
      * JSONデータを作成
      * @return
@@ -94,47 +101,13 @@ public class PaylistActivity extends Activity {
             } else {  //返金
                 json.put("procMode", "02");
             }
-            json.put("payStartDateTime", payDateStart.getText().toString());
-            json.put("payEndDateTime", payDateEnd.getText().toString());
+            json.put("procStartDateTime", payDateStart.getText().toString() + ":00");
+            json.put("procEndDateTime", payDateEnd.getText().toString() + ":59");
 
         } catch (JSONException e) {
             Log.d("PaylistActivity", e.toString());
         }
         return json;
-    }
-
-    /**
-     * リストが選択されたときの処理
-     */
-    private class ListItemClickListener implements AdapterView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //区分をセット
-            if (processKbn == 1) { //決済
-                mspApp.setResultKbn("12");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
-            } else {  //返金
-                mspApp.setResultKbn("22");
-            }
-            //選択した行Noを取得
-            Map<String, String> item = (Map<String, String>) parent.getItemAtPosition(position);
-            String lineIdStr = item.get("lineId");
-            int lineId = Integer.parseInt(lineIdStr);
-
-            //明細行データを取得
-            CommPayDetailBean payBean = mspApp.getPayDataList().get(lineId);
-
-            //詳細画面へ移動します
-            Intent intent = new Intent(PaylistActivity.this, DetailActivity.class);
-            intent.putExtra("payCompany", payBean.getPayCompany());
-            intent.putExtra("payAmount", payBean.getPayAmount());
-            intent.putExtra("payUserId", payBean.getPayUserId());
-            intent.putExtra("payOrderId", payBean.getPayOrderId());
-            intent.putExtra("payDeviceId", payBean.getPayDeviceId());
-            intent.putExtra("payDateTime", payBean.getPayDateTime());
-
-            startActivity(intent);
-        }
     }
 
     /**
@@ -157,30 +130,30 @@ public class PaylistActivity extends Activity {
      * @return
      * @throws JSONException
      */
-    public void setPayList(JSONObject jsonResult) {
-
-
-        //TODO setPayList(JSONObject jsonResult)
+    public void setPayList(JSONObject jsonResult) throws JSONException {
 
         // ListViewに表示する項目を生成
         ArrayList<CommPayDetailBean> beanListData = new ArrayList<>();
         List<Map<String, String>> listData = new ArrayList<Map<String,String>>();
+        JSONArray listBeans =  jsonResult.getJSONArray("ProcBeans");
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < listBeans.length(); i++) {
             //jsonResult から　code の文字を取得
-            /*
-            String viewPayAmount = jsonResult.getString("Amount");
-            viewPayAmount = "¥" + viewPayAmount +"円";
+            JSONObject jsonBean = listBeans.getJSONObject(i);
 
-            String viewPayOrderId = jsonResult.getString("ProcId");
-            String viewPayDateTime = jsonResult.getString("ProcessDateTime");
-            String viewPayUserId = jsonResult.getString("UserId");
-            String viewPayDeviceId = jsonResult.getString("TerminalId");
+            String payAmount = jsonBean.getString("Amount");
+            payAmount = "¥" + payAmount +"円";
 
-            String payCompanyKbn = jsonResult.getString("SystemId");
+            String payOrderId = jsonBean.getString("ProcId");
+            String payDateTime = jsonBean.getString("ProcessDateTime");
+            String payUserId = jsonBean.getString("UserId");
+            String payDeviceId = jsonBean.getString("TerminalId");
+
+            String payCompanyKbn = jsonBean.getString("SystemId");
             String payCompanyNm = commUtil.getPayCompanyNm(payCompanyKbn);
-*/
-//for test
+
+            //for test
+            /*
             String payAmount = "¥234円";
             String payOrderId = "12201812231234567"+i;
             String payDateTime = "2018-12-20 12:20:30";
@@ -188,15 +161,7 @@ public class PaylistActivity extends Activity {
             String payDeviceId = "12201812231234567";
             String payCompanyKbn = "01";
             String payCompanyNm = commUtil.getPayCompanyNm(payCompanyKbn);
-
-            HashMap<String,String> data = new HashMap<>();
-            // 引数には、(名前,実際の値)という組合せで指定します　名前はSimpleAdapterの引数で使用します
-            data.put("payOrderId", payOrderId);
-            data.put("payAmount", payAmount);
-            data.put("lineId", Integer.toString(i));
-            data.put("payCompanyNm", payCompanyNm);
-            data.put("payDateTime", payDateTime);
-            listData.add(data);
+            */
 
             CommPayDetailBean payBean = new CommPayDetailBean();
             payBean.setPayAmount(payAmount);
@@ -206,34 +171,37 @@ public class PaylistActivity extends Activity {
             payBean.setPayDeviceId(payDeviceId);
             payBean.setPayCompany(payCompanyNm);
             beanListData.add(payBean);
+
+            HashMap<String,String> data = new HashMap<>();
+            // 引数には、(名前,実際の値)という組合せで指定します　名前はSimpleAdapterの引数で使用します
+            data.put("lineId", Integer.toString(i));
+            data.put("payOrderId", getString(R.string.lab_payDetail_orderId) + payOrderId);
+            data.put("payAmount", getString(R.string.lab_payDetail_amount) + payAmount);
+            data.put("payCompanyNm", getString(R.string.lab_payDetail_compang) + payCompanyNm);
+            data.put("payDateTime", getString(R.string.lab_payDetail_dateTime) + payDateTime);
+            listData.add(data);
         }
 
-        if (beanListData.isEmpty()) {
-            //データがなしのメッセージを表示
-            Toast.makeText(PaylistActivity.this, getString(R.string.msg0021), Toast.LENGTH_LONG).show();
-        } else {
-            //明細データを保存
-            mspApp.setPayDataList(beanListData);
+        //明細データを保存
+        mspApp.setPayDataList(beanListData);
 
-            /*
-             * Adapterを生成
-             * R.layout.custom_list_layout : リストビュー自身のレイアウト。今回は自作。
-             * new String[]{***} : 受け渡し元項目名
-             * new int[]{***} : 受け渡し先ID
-             */
-            SimpleAdapter simpleAdapter = new SimpleAdapter(this,
-                    listData, // 使用するデータ
-                    R.layout.pay_list_item, // 自作したレイアウト
-                    new String[]{"payOrderId","payAmount","lineId","payCompanyNm", "payDateTime"}, // どの項目を
-                    new int[]{R.id.payListOrderId, R.id.payListAmount, R.id.payListId, R.id.payListCompany, R.id.payListDateTime} // どのidの項目に入れるか
-            );
-            // idがlistのListViewを取得
-            ListView listView = (ListView) findViewById(R.id.payListView);
-            listView.setAdapter(simpleAdapter);
-            listView.setOnItemClickListener(new ListItemClickListener());
-        }
+        /*
+         * Adapterを生成
+         * R.layout.custom_list_layout : リストビュー自身のレイアウト。今回は自作。
+         * new String[]{***} : 受け渡し元項目名
+         * new int[]{***} : 受け渡し先ID
+         */
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this,
+                listData, // 使用するデータ
+                R.layout.pay_list_item, // 自作したレイアウト
+                new String[]{"payOrderId","payAmount","lineId","payCompanyNm", "payDateTime"}, // どの項目を
+                new int[]{R.id.payListOrderId, R.id.payListAmount, R.id.payListId, R.id.payListCompany, R.id.payListDateTime} // どのidの項目に入れるか
+        );
+        // idがlistのListViewを取得
+        ListView listView = (ListView) findViewById(R.id.payListView);
+        listView.setAdapter(simpleAdapter);
+        listView.setOnItemClickListener(new ListItemClickListener());
     }
-
 
     /**
      * 開始日付をセット
@@ -250,7 +218,6 @@ public class PaylistActivity extends Activity {
     public void selectEndDate(View view) {
         this.showCalendar(payDateEnd);
     }
-
 
     /**
      * 初期化の日付と時間をセット
@@ -275,36 +242,25 @@ public class PaylistActivity extends Activity {
     private void showCalendar(TextView dateView) {
 
         Calendar c = Calendar.getInstance();
-        Dialog dateDialog = new DatePickerDialog(PaylistActivity.this, new DatePickerDialog.OnDateSetListener() {
+        Dialog dateDialog = new DatePickerDialog(PaylistActivity.this, (arg0, year, month, day) -> {
+            stringBuilderDatetime = new StringBuffer("");
+            stringBuilderDatetime.append(year + "-" + ((month+1) < 10 ? "0"+ (month+1) : (month+1)+"") + "-" + (day < 10 ? "0"+ day : day));
 
-            @Override
-            public void onDateSet(DatePicker arg0, int year, int month, int day) {
-                stringBuilderDatetime = new StringBuffer("");
-                stringBuilderDatetime.append(year + "-" + ((month+1) < 10 ? "0"+ (month+1) : (month+1)+"") + "-" + (day < 10 ? "0"+ day : day));
-
-                Calendar time = Calendar.getInstance();
-                Dialog timeDialog = new TimePickerDialog(PaylistActivity.this, new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        stringBuilderDatetime.append(" " + (hourOfDay < 10 ? "0"+ hourOfDay : hourOfDay) + ":"+(minute < 10 ? "0"+ minute : minute));
-                        //項目にデータをセット
-                        dateView.setText(stringBuilderDatetime);//yyMM-dd-HH mm:ss
-                    }
-                }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true);
-                timeDialog.show();
-            }
+            Calendar time = Calendar.getInstance();
+            Dialog timeDialog = new TimePickerDialog(PaylistActivity.this, (view, hourOfDay, minute) -> {
+                stringBuilderDatetime.append(" " + (hourOfDay < 10 ? "0"+ hourOfDay : hourOfDay) + ":"+(minute < 10 ? "0"+ minute : minute));
+                //項目にデータをセット
+                dateView.setText(stringBuilderDatetime);//yyMM-dd-HH mm:ss
+            }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true);
+            timeDialog.show();
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         dateDialog.show();
     }
 
-
-    //########### 内部クラス 「非同期処理」  ##################
-    // AsyncTask that configures the scanned data on background
-    // thread and updated the result on UI thread with scanned data and type of label
-    //その際、AsyncTaskにジェネリクスを3個指定する必要があります。
-    // これは、AsyncTaskを継承したクラス内のメソッドの引数や戻り値の型を指定するためです。
-    //ログイン送信クラス
+    //########### 内部クラス  ##################
+    /**
+     * APIに送信クラス　 「非同期処理」
+     */
     private class DoGetListData extends AsyncTask<JSONObject, String, String> {
         /**
          * 決済送信
@@ -348,11 +304,11 @@ public class PaylistActivity extends Activity {
                 mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
             }
             //処理が完了
-            if (mspApp.getResultKbn() != null && !("99").equals(mspApp.getResultKbn())) {
+            if (mspApp.getResultKbn() != null && !("99").equals(mspApp.getResultKbn()) && !("-1").equals(mspApp.getResultKbn())) {
                 //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
             } else {
                 //異常メッセージを表示
-                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -384,8 +340,14 @@ public class PaylistActivity extends Activity {
                 } else {
                     mspApp.setResultKbn("00");//WebAPI処理 正常
 
-                    //明細データをセット
-                    setPayList(jsonResult);
+                    String resultCount = jsonResult.getString("ResultCount");
+                    if ("0".equals(resultCount)) {
+                        mspApp.setResultKbn("-1");//結果データがない
+                        resultMessage = getString(R.string.msg0010);
+                    } else {
+                        //明細データをセット
+                        setPayList(jsonResult);
+                    }
                 }
             } else {
                 //WebAPI処理　失敗
@@ -394,6 +356,89 @@ public class PaylistActivity extends Activity {
             return resultMessage;
         }
     }
+
+    /**
+     * リストが選択されたときの処理
+     */
+    private class ListItemClickListener implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //区分をセット
+            if (processKbn == 1) { //決済
+                mspApp.setResultKbn("12");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+            } else {  //返金
+                mspApp.setResultKbn("22");
+            }
+            //選択した行Noを取得
+            Map<String, String> item = (Map<String, String>) parent.getItemAtPosition(position);
+            String lineIdStr = item.get("lineId");
+            int lineId = Integer.parseInt(lineIdStr);
+
+            //明細行データを取得
+            CommPayDetailBean payBean = mspApp.getPayDataList().get(lineId);
+
+            //詳細画面へ移動します
+            Intent intent = new Intent(PaylistActivity.this, DetailActivity.class);
+            intent.putExtra("payCompany", payBean.getPayCompany());
+            intent.putExtra("payAmount", payBean.getPayAmount());
+            intent.putExtra("payUserId", payBean.getPayUserId());
+            intent.putExtra("payOrderId", payBean.getPayOrderId());
+            intent.putExtra("payDeviceId", payBean.getPayDeviceId());
+            intent.putExtra("payDateTime", payBean.getPayDateTime());
+
+            startActivity(intent);
+        }
+    }
+
+    /**
+     * EditText テキストの変更 Listener
+     */
+    private class DateTextWatcher implements TextWatcher {
+
+        // 通知するためのエディットボックス
+        private final TextView mNotifyEditText;
+        //修正前の文字
+        private String beforeTextStr = "";
+        //修正後の文字
+        private String afterTextStr = "";
+
+        // コンストラクタ
+        public DateTextWatcher(final TextView notifyEditText) {
+            this.mNotifyEditText = notifyEditText;
+        }
+
+        ////////////////////////////////////////////////////////////
+        // テキスト変更前
+        public void beforeTextChanged(CharSequence s, int start,
+                                      int count, int after) {
+            Log.v(TextWatcher.class.getSimpleName(),
+                    "beforeTextChanged s:" + s.toString());
+            this.beforeTextStr = s.toString();
+        }
+
+        ////////////////////////////////////////////////////////////
+        // テキスト変更中
+        public void onTextChanged(CharSequence s, int start,
+                                  int before, int count) {
+            Log.v(TextWatcher.class.getSimpleName(),
+                    "onTextChanged s: " + s.toString());
+        }
+
+        ////////////////////////////////////////////////////////////
+        // テキスト変更後
+        public void afterTextChanged(Editable s) {
+            Log.v(TextWatcher.class.getSimpleName(),
+                    "afterTextChanged s: " + s.toString());
+            this.afterTextStr = s.toString();
+
+            if (!this.beforeTextStr.equals(this.afterTextStr)) {
+                //データが変わりました
+                //明細データを検索処理
+                doSearch();
+            }
+        }
+    }
+
     //########### 内部クラス End  ##################
 
 }

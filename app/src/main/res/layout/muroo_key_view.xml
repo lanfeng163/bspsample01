@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/muroo_key_view_rootlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <Button
+        android:id="@+id/keyButton7"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/muroo_key_str7"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton8"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_alignTop="@+id/keyButton7"
+        android:layout_toEndOf="@+id/keyButton7"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:text="@string/muroo_key_str8"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton9"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_alignTop="@+id/keyButton8"
+        android:layout_toEndOf="@+id/keyButton8"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:text="@string/muroo_key_str9"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton4"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/keyButton7"
+        android:layout_marginStart="5dp"
+        android:text="@string/muroo_key_str4"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton5"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/keyButton8"
+        android:layout_toEndOf="@id/keyButton4"
+        android:text="@string/muroo_key_str5"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton6"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/keyButton9"
+        android:layout_toEndOf="@id/keyButton5"
+        android:text="@string/muroo_key_str6"
+        android:textSize="@dimen/font_size1" />
+
+
+    <Button
+        android:id="@+id/keyButton1"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/keyButton4"
+        android:text="@string/muroo_key_str1"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton2"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/keyButton5"
+        android:layout_toEndOf="@id/keyButton1"
+        android:text="@string/muroo_key_str2"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton3"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/keyButton6"
+        android:layout_toEndOf="@id/keyButton2"
+        android:text="@string/muroo_key_str3"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton0"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/keyButton1"
+        android:text="@string/muroo_key_str0"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButton00"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/keyButton2"
+        android:layout_toEndOf="@id/keyButton0"
+        android:text="@string/muroo_key_str00"
+        android:textSize="@dimen/font_size1" />
+
+    <Button
+        android:id="@+id/keyButtonBS"
+        android:layout_width="75dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_below="@id/keyButton3"
+        android:layout_toEndOf="@id/keyButton00"
+        android:text="@string/muroo_key_str_bs"
+        android:textSize="@dimen/font_size1" />
+
+
+    <Button
+        android:id="@+id/keyButtonAC"
+        android:layout_width="120dp"
+        android:layout_height="130dp"
+        android:layout_alignTop="@+id/keyButton9"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/keyButton9"
+        android:text="@string/muroo_key_str_ac"
+        android:textSize="@dimen/font_size1" />
+
+
+    <Button
+        android:id="@+id/keyButtonET"
+        android:layout_width="120dp"
+        android:layout_height="130dp"
+        android:layout_below="@id/keyButtonAC"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@id/keyButtonBS"
+        android:text="@string/muroo_key_str_et"
+        android:textSize="@dimen/font_size1" />
+
+</RelativeLayout>
