@@ -341,12 +341,12 @@ public class PaylistActivity extends Activity {
                     mspApp.setResultKbn("00");//WebAPI処理 正常
 
                     String resultCount = jsonResult.getString("ResultCount");
+                    //明細データをセット(データが無し時、明細をクリアします)
+                    setPayList(jsonResult);
+
                     if ("0".equals(resultCount)) {
                         mspApp.setResultKbn("-1");//結果データがない
                         resultMessage = getString(R.string.msg0010);
-                    } else {
-                        //明細データをセット
-                        setPayList(jsonResult);
                     }
                 }
             } else {

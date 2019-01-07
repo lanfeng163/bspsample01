@@ -70,8 +70,7 @@ public class PayActivity extends Activity {
         //画面のデータを初期化
         this.initLayout();
 
-        String userId = mspApp.getUserId();
-        userInfoTextView.setText(userId);
+        userInfoTextView.setText(mspApp.getShopName() + "/" + mspApp.getUserId());
 
         processKbn =  mspApp.getProcessKbn();
         //処理区分により、画面の文字を初期化

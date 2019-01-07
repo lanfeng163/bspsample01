@@ -68,8 +68,8 @@
     <string name="msp_pay_url">http://192.168.31.209:2000/msp/PaymentApi/PostPaymentProcess</string>
     <string name="msp_pay_ist_url">http://192.168.31.209:2000/msp/SearchApi/PostSearchTradeProcess</string>
 
-    <string name="msg0001">ユーザーIDを入力してください</string>
-    <string name="msg0002">パスワードを入力してください</string>
+    <string name="msg0001">ユーザーID</string>
+    <string name="msg0002">パスワード</string>
     <string name="msg0003">異常終了しました、管理者に連絡してください。</string>
     <string name="msg0004">デバイスIDを取得する際に失敗しました。</string>
     <string name="msg0005">デバイスIDが取得できません。</string>
@@ -82,9 +82,8 @@
     <string name="msg0011">…</string>
 
     <string name="msg0012">送信しました。少々お待ちください。</string>
-    <string name="msg0013">…</string>
-
-    <string name="msg0014">…</string>
+    <string name="msg0013">ユーザーIDを入力してください。</string>
+    <string name="msg0014">パスワードを入力してください。</string>
 
     <string name="msg0015">送信処理が異常発生しました。</string>
     <string name="msg0016">送信結果JSONの処理が異常終了しました。</string>
@@ -126,6 +125,6 @@
     <string name="muroo_key_str00">00</string>
     <string name="muroo_key_str_bs">🔙</string>
     <string name="muroo_key_str_ac">AC</string>
-    <string name="muroo_key_str_et">Enter</string>
+    <string name="muroo_key_str_et">[―]</string>
 
 </resources>

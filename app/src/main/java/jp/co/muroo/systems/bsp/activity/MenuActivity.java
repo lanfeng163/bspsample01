@@ -23,7 +23,7 @@ import jp.co.muroo.systems.bsp.R;
  */
 public class MenuActivity extends Activity {
 
-    public MspApplication globals = null;
+    public MspApplication mspApp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class MenuActivity extends Activity {
 
         this.setTitle(R.string.head_title_name2);//タイトルバーの文字列
 
-        globals = (MspApplication) this.getApplication();
+        mspApp = (MspApplication) this.getApplication();
 
         // Reference to UI elements
         TextView info = findViewById(R.id.txtMenuInfo);
@@ -40,7 +40,7 @@ public class MenuActivity extends Activity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         // Capture the layout's TextView and set the string as its text
-        info.setText("ご利用ありがとうございます。");
+        info.setText(mspApp.getShopName() + "/" + mspApp.getUserId());
 
         this.setMenuList();
 
@@ -102,27 +102,27 @@ public class MenuActivity extends Activity {
                     //決済処理
                     //Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
 
-                    globals.setProcessKbn(1);   //1:決済　2:返金
+                    mspApp.setProcessKbn(1);   //1:決済　2:返金
                     //    Intent intent = new Intent(this, PayActivity.class);
                     intent = new Intent(MenuActivity.this, PayActivity.class);
                     startActivity(intent);
                     break;
                 case 2:
                     //返金処理
-                    globals.setProcessKbn(2);   //1:決済　2:返金
+                    mspApp.setProcessKbn(2);   //1:決済　2:返金
                     intent = new Intent(MenuActivity.this, PayActivity.class);
                     startActivity(intent);
                     break;
                 case 3:
                     //Toast.makeText(getApplicationContext(), getString(R.string.group2menu1) + "　は開発中...", Toast.LENGTH_SHORT).show();
 
-                    globals.setProcessKbn(1);   //1:決済照会　2:返金照会
+                    mspApp.setProcessKbn(1);   //1:決済照会　2:返金照会
                     intent = new Intent(MenuActivity.this, PaylistActivity.class);
                     startActivity(intent);
                     break;
                 case 4:
                     //Toast.makeText(getApplicationContext(), getString(R.string.group2menu2) + "　は開発中...", Toast.LENGTH_SHORT).show();
-                    globals.setProcessKbn(2);   //1:決済照会　2:返金照会
+                    mspApp.setProcessKbn(2);   //1:決済照会　2:返金照会
                     intent = new Intent(MenuActivity.this, PaylistActivity.class);
                     startActivity(intent);
                     break;

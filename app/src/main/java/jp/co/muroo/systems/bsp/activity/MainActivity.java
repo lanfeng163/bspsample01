@@ -189,14 +189,14 @@ public class MainActivity extends Activity {
 
             //ユーザーIDが入力していない。
             if ( TextUtils.isEmpty(userIdEdi) ) {
-                Toast.makeText(MainActivity.this, R.string.msg0001, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.msg0013, Toast.LENGTH_SHORT).show();
                 mspApp.setUserId(null);
                 return;
             }
 
             //パースワードが入力していない。
             if ( TextUtils.isEmpty(passwordEdi) ) {
-                Toast.makeText(MainActivity.this, R.string.msg0002, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.msg0014, Toast.LENGTH_SHORT).show();
                 mspApp.setUserId(null);
                 return;
             }
