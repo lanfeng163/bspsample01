@@ -11,7 +11,8 @@ android:layout_height="match_parent">
         <TextView
             android:id="@+id/payListOrderId"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="28dp"
+            android:gravity="bottom"
             android:paddingLeft="16dp"
             android:text="取引番号"
             android:textSize="@dimen/font_size1" />

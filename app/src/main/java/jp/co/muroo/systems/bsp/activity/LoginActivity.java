@@ -33,7 +33,7 @@ import jp.co.muroo.systems.bsp.comm.CommUtil;
 /**
  * ログインActivity
  */
-public class MainActivity extends Activity {
+public class LoginActivity extends Activity {
 
     public MspApplication mspApp = null;
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE_0 = 0;
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         this.setTitle(R.string.head_title_name1);//タイトルバーの文字列
 
@@ -84,13 +84,13 @@ public class MainActivity extends Activity {
     private void requestReadPhoneStatePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.READ_PHONE_STATE)) {
-            new AlertDialog.Builder(MainActivity.this)
+            new AlertDialog.Builder(LoginActivity.this)
                     .setTitle("Permission Request")
                     .setMessage(getString(R.string.permission_read_phone_state_rationale))
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                         //re-request
-                        ActivityCompat.requestPermissions(MainActivity.this,
+                        ActivityCompat.requestPermissions(LoginActivity.this,
                                 new String[]{Manifest.permission.READ_PHONE_STATE},
                                 MY_PERMISSIONS_REQUEST_READ_PHONE_STATE_0);
                     })
@@ -113,7 +113,7 @@ public class MainActivity extends Activity {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 doPermissionGrantedStuffs();
             } else {
-                Toast.makeText(MainActivity.this, R.string.permissions_not_granted_read_phone_state, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, R.string.permissions_not_granted_read_phone_state, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -132,7 +132,7 @@ public class MainActivity extends Activity {
             SIMSerialNumber = getSerialNumber();
         }
         if (SIMSerialNumber == null || "".equals(SIMSerialNumber)) {
-            Toast.makeText(MainActivity.this, R.string.msg0004, Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, R.string.msg0004, Toast.LENGTH_SHORT).show();
             deviceIdView.setText(getString(R.string.msg0005));
         } else {
             mspApp.setDeviceId(SIMSerialNumber);
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
             serialNumber = (String) get.invoke(c, "ro.serialno");//OK got
 
         } catch (Exception ex) {
-            Log.e("MainActivity", ex.toString());
+            Log.e("LoginActivity", ex.toString());
         }
         return serialNumber;
     }
@@ -189,14 +189,14 @@ public class MainActivity extends Activity {
 
             //ユーザーIDが入力していない。
             if ( TextUtils.isEmpty(userIdEdi) ) {
-                Toast.makeText(MainActivity.this, R.string.msg0013, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, R.string.msg0013, Toast.LENGTH_SHORT).show();
                 mspApp.setUserId(null);
                 return;
             }
 
             //パースワードが入力していない。
             if ( TextUtils.isEmpty(passwordEdi) ) {
-                Toast.makeText(MainActivity.this, R.string.msg0014, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, R.string.msg0014, Toast.LENGTH_SHORT).show();
                 mspApp.setUserId(null);
                 return;
             }
@@ -210,7 +210,7 @@ public class MainActivity extends Activity {
 
             //Jsonを作成
             JSONObject json = this.getLoginJson(mspApp, password);
-            Log.i("MainActivity","送信Json is: " + json.toString());
+            Log.i("LoginActivity","送信Json is: " + json.toString());
 
             //ログイン送信は非同期で処理します
             new DoLogin().execute(json);
@@ -218,10 +218,10 @@ public class MainActivity extends Activity {
             //フォーカスを設定
             this.setFocus(userIdText);
 
-            Toast.makeText(MainActivity.this, R.string.msg0012, Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, R.string.msg0012, Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
-            Toast.makeText(MainActivity.this, R.string.msg0003, Toast.LENGTH_SHORT).show();
-            Log.e("MainActivity", ex.toString());
+            Toast.makeText(LoginActivity.this, R.string.msg0003, Toast.LENGTH_SHORT).show();
+            Log.e("LoginActivity", ex.toString());
         }
     }
 
@@ -287,9 +287,9 @@ public class MainActivity extends Activity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
         } catch (Exception ex) {
-            Toast.makeText(MainActivity.this, R.string.msg0004, Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, R.string.msg0004, Toast.LENGTH_SHORT).show();
             deviceIdView.setText(getString(R.string.msg0005));
-            Log.e("MainActivity", ex.toString());
+            Log.e("LoginActivity", ex.toString());
         }
     }
 
@@ -306,7 +306,7 @@ public class MainActivity extends Activity {
         public String doInBackground(JSONObject... params) {
             String result;
             //POSTで　WebAPIに決済送信
-            result = commUtil.doPost(getString(R.string.msp_login_url), params[0], MainActivity.class.getName());
+            result = commUtil.doPost(getString(R.string.msp_login_url), params[0], LoginActivity.class.getName());
             return result;
         }
 
@@ -333,7 +333,7 @@ public class MainActivity extends Activity {
                     resultMessage = setMspResult(rootJSON);
                 }
             } catch (JSONException ex) {
-                Log.d(MainActivity.class.getName(), ex.toString());
+                Log.d(LoginActivity.class.getName(), ex.toString());
                 resultMessage = getString(R.string.msg0016);
                 //失敗
                 mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
@@ -342,11 +342,12 @@ public class MainActivity extends Activity {
             if (mspApp.getResultKbn() != null && !("99").equals(mspApp.getResultKbn())) {
                 //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
                 //結果画面に遷移します。
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MenuBtnsActivity.class);
                 startActivity(intent);
             } else {
                 //メッセージをセット
-                Toast.makeText(MainActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
             }
         }
 

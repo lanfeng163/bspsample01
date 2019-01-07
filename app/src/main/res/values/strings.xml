@@ -2,6 +2,11 @@
     <string name="app_name">MSPシステム</string>
     <string name="app_compay">株式会社ムロオシステムズ</string>
 
+    <string name="menu_name1">決済</string>
+    <string name="menu_name2">返金</string>
+    <string name="menu_name3">決済一覧</string>
+    <string name="menu_name4">返金一覧</string>
+
     <string name="head_title_name1">ログイン</string>
     <string name="head_title_name2">MurooSystems Pay</string>
 
@@ -13,6 +18,7 @@
 
     <string name="head_title_name7">決済一覧</string>
     <string name="head_title_name8">返金一覧</string>
+
     <string name="head_title_name9">決済照会</string>
     <string name="head_title_name10">返金照会</string>
 

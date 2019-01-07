@@ -19,7 +19,7 @@ import jp.co.muroo.systems.bsp.MspApplication;
 import jp.co.muroo.systems.bsp.R;
 
 /**
- * メニューActivity
+ * メニューActivity①－ListView
  */
 public class MenuActivity extends Activity {
 

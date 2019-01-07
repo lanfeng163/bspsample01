@@ -21,33 +21,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.MenuActivity"
-            android:parentActivityName=".activity.MainActivity">
+            android:parentActivityName=".activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="jp.co.muroo.systems.bsp.activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".activity.PayActivity"
-            android:parentActivityName=".activity.MenuActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="jp.co.muroo.systems.bsp.activity.MenuActivity" />
+                android:value="jp.co.muroo.systems.bsp.activity.LoginActivity" />
         </activity>
 
-        <activity android:name=".activity.PaylistActivity"
-            android:parentActivityName=".activity.MenuActivity">
+        <activity android:name=".activity.MenuBtnsActivity"
+            android:parentActivityName=".activity.LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="jp.co.muroo.systems.bsp.activity.MenuActivity" />
+                android:value="jp.co.muroo.systems.bsp.activity.LoginActivity" />
+        </activity>
+
+        <activity
+            android:name=".activity.PayActivity"
+            android:parentActivityName=".activity.MenuBtnsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="jp.co.muroo.systems.bsp.activity.MenuBtnsActivity" />
+        </activity>
+
+        <activity
+            android:name=".activity.PaylistActivity"
+            android:parentActivityName=".activity.MenuBtnsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="jp.co.muroo.systems.bsp.activity.MenuBtnsActivity" />
         </activity>
 
         <activity

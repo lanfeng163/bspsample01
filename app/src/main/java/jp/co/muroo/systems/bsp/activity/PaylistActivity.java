@@ -271,7 +271,7 @@ public class PaylistActivity extends Activity {
         public String doInBackground(JSONObject... params) {
             String result;
             //POSTで　WebAPIに決済送信
-            result = commUtil.doPost(getString(R.string.msp_pay_ist_url), params[0], MainActivity.class.getName());
+            result = commUtil.doPost(getString(R.string.msp_pay_ist_url), params[0], LoginActivity.class.getName());
             return result;
         }
 
