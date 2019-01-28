@@ -356,7 +356,6 @@ public class PayActivity extends Activity {
      */
     private void doSeed() {
 
-        //TODO 決済送信データをセット…
         CommPayBean payBean = new CommPayBean();
       
         payBean.setTerminalId(mspApp.getDeviceId());

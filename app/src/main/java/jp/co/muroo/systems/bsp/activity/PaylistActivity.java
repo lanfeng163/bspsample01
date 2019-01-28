@@ -96,11 +96,9 @@ public class PaylistActivity extends Activity {
 
                         // 判断滚动到底部 、position是从0开始算起的
                         if (view.getLastVisiblePosition() == (listView.getCount() - 1)) {
-                            //TODO
                         }
                         // 判断滚动到顶部
                         if (view.getFirstVisiblePosition() == 0) {
-                            //TODO
                         }
                         break;
                     case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:// 滚动时
@@ -120,10 +118,8 @@ public class PaylistActivity extends Activity {
                 if (scrollFlag) {
                     if (firstVisibleItem < lastVisibleItemPosition) {
                         // 上滑
-                        //TODO
                     } else if (firstVisibleItem > lastVisibleItemPosition) {
                         // 下滑
-                        //TODO
                     } else {
                         return;
                     }
