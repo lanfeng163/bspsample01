@@ -19,7 +19,7 @@ import jp.co.muroo.systems.bsp.MspApplication;
 import jp.co.muroo.systems.bsp.R;
 
 /**
- * メニューActivity①－ListView
+ * メニューActivity①－ListView　「使っていない」
  */
 public class MenuActivity extends Activity {
 
@@ -115,13 +115,14 @@ public class MenuActivity extends Activity {
                     break;
                 case 3:
                     //Toast.makeText(getApplicationContext(), getString(R.string.group2menu1) + "　は開発中...", Toast.LENGTH_SHORT).show();
-
+                    mspApp.setStartEndDatetime();
                     mspApp.setProcessKbn(1);   //1:決済照会　2:返金照会
                     intent = new Intent(MenuActivity.this, PaylistActivity.class);
                     startActivity(intent);
                     break;
                 case 4:
                     //Toast.makeText(getApplicationContext(), getString(R.string.group2menu2) + "　は開発中...", Toast.LENGTH_SHORT).show();
+                    mspApp.setStartEndDatetime();
                     mspApp.setProcessKbn(2);   //1:決済照会　2:返金照会
                     intent = new Intent(MenuActivity.this, PaylistActivity.class);
                     startActivity(intent);

@@ -1,17 +1,31 @@
 package jp.co.muroo.systems.bsp;
 
 import android.app.Application;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.sunmi.printerhelper.utils.AidlUtil;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import jp.co.muroo.systems.bsp.activity.PayActivity;
 import jp.co.muroo.systems.bsp.comm.CommPayDetailBean;
 
 /**
  * The Applicationクラス
  */
 public class MspApplication extends Application {
-
-    private static final String tag = "MspApplication";
 
     //基本情報
     private String userId;
@@ -22,7 +36,7 @@ public class MspApplication extends Application {
     private String shopInfo;
     private String shopTel;
 
-    //処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細  99：エラー）
+    //処理結果
     private String resultKbn;
     //サーバーのデジタル署名
     private String serverDigitalSignature;
@@ -32,8 +46,13 @@ public class MspApplication extends Application {
 
     //処理結果詳細データをセット　Start
 
+    //処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 ）
+    private String payResultKbn;
     //処理金額
     private int payAmount;
+    //返済金額
+    private int payCancelAmount;
+
     //決済会社
     private String payCompany;
     //取引番号
@@ -44,12 +63,27 @@ public class MspApplication extends Application {
     private String payUserId;
     //処理デバイス
     private String payDeviceId;
-
     //処理結果詳細データをセット　End
+
+    private String payDateStart;
+    private String payDateEnd;
 
     //一覧画面の明細データ
     ArrayList<CommPayDetailBean> payDataList = new ArrayList<>();
 
+    private boolean listToCancel;
+    private int listToCancelAmount;
+
+    public boolean isListToCancel() {        return listToCancel;    }
+    public void setListToCancel(boolean listToCancel) {        this.listToCancel = listToCancel;    }
+    public int getListToCancelAmount() {        return listToCancelAmount;    }
+    public void setListToCancelAmount(int listToCancelAmount) {        this.listToCancelAmount = listToCancelAmount;    }
+
+    public int getPayCancelAmount() {        return payCancelAmount;    }
+    public void setPayCancelAmount(int payCancelAmount) {        this.payCancelAmount = payCancelAmount;    }
+
+    public String getPayResultKbn() {        return payResultKbn;    }
+    public void setPayResultKbn(String payResultKbn) {        this.payResultKbn = payResultKbn;   }
     public ArrayList<CommPayDetailBean> getPayDataList() {        return payDataList;    }
     public void setPayDataList(ArrayList<CommPayDetailBean> payDataList) {        this.payDataList = payDataList;    }
     public String getShopName() {
@@ -77,6 +111,7 @@ public class MspApplication extends Application {
     public void setPayAmount(int payAmount) {
         this.payAmount = payAmount;
     }
+
     public String getPayCompany() {
         return payCompany;
     }
@@ -118,9 +153,12 @@ public class MspApplication extends Application {
         this.deviceId = deviceId;
     }
     public String getDigitalSignature() { return digitalSignature; }
-    public void setDigitalSignature(String digitalSignature) {
-        this.digitalSignature = digitalSignature;
-    }
+    public void setDigitalSignature(String digitalSignature) {        this.digitalSignature = digitalSignature;    }
+
+    public String getPayDateStart() {        return payDateStart;    }
+    public void setPayDateStart(String payDateStart) {        this.payDateStart = payDateStart;    }
+    public String getPayDateEnd() {        return payDateEnd;    }
+    public void setPayDateEnd(String payDateEnd) {        this.payDateEnd = payDateEnd;    }
 
     @Override
     public void onCreate() {
@@ -151,8 +189,52 @@ public class MspApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                Log.e(tag, "==------configUncaughtExceptionHandler----Sunmi Scan---==" + ex.toString());
+                Log.e("MspApplication", "==------configUncaughtExceptionHandler----Sunmi Scan---==" + ex.toString());
+                Toast.makeText(MspApplication.this, ex.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * ログアウトの処理
+     */
+    public void setLogOut() {
+
+        this.setUserId("");
+        this.setDigitalSignature("");
+
+        this.setShopName("");
+        this.setShopInfo("");
+        this.setShopTel("");
+        this.setToken("");
+    }
+
+    /**
+     * 決済詳細データをクリア
+     */
+    public void clearPayedInfo() {
+        this.setPayResultKbn("");
+        this.setPayCompany("");
+        this.setPayAmount(0);
+        this.setPayCancelAmount(0);
+        this.setPayOrderId("");
+        this.setPayProcessDateTime("");
+        this.setPayUserId("");
+        this.setPayDeviceId("");
+
+        this.setListToCancel(false);
+        this.setListToCancelAmount(0);
+    }
+
+    /**
+     * 初期化の日付と時間をセット
+     */
+    public void setStartEndDatetime() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00");
+        payDateStart = sdf.format(date);
+
+        sdf = new SimpleDateFormat("yyyy-MM-dd 23:59");
+        payDateEnd = sdf.format(date);
     }
 }

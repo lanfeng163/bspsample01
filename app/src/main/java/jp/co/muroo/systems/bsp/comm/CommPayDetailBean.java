@@ -8,7 +8,9 @@ public class CommPayDetailBean {
     //決済会社
     private String payCompany;
     //処理金額
-    private String payAmount;
+    private int payAmount;
+    //返金済金額
+    private int payCancelAmount;
     //取引番号
     private String payOrderId;
     //処理時刻
@@ -18,6 +20,8 @@ public class CommPayDetailBean {
     //処理デバイス
     private String payDeviceId;
 
+    public int getPayCancelAmount() {        return payCancelAmount;    }
+    public void setPayCancelAmount(int payCancelAmount) {        this.payCancelAmount = payCancelAmount;    }
     public String getPayCompany() {
         return payCompany;
     }
@@ -26,13 +30,8 @@ public class CommPayDetailBean {
         this.payCompany = payCompany;
     }
 
-    public String getPayAmount() {
-        return payAmount;
-    }
-
-    public void setPayAmount(String payAmount) {
-        this.payAmount = payAmount;
-    }
+    public int getPayAmount() {        return payAmount;    }
+    public void setPayAmount(int payAmount) {        this.payAmount = payAmount;    }
 
     public String getPayOrderId() {
         return payOrderId;

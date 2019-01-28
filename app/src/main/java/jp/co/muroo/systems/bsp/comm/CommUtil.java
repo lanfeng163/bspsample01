@@ -98,9 +98,9 @@ public class CommUtil {
             connection.getOutputStream().close();
             //JSONを送信　POST end
 
-            // 接続！
-            connection.setConnectTimeout(6000);
-            connection.setReadTimeout(6000);
+            // 接続！ 1000(1秒)
+            connection.setConnectTimeout(6000000);
+            connection.setReadTimeout(6000000);
             connection.connect();
 
             if (connection.getResponseCode() != 200) {

@@ -1,16 +1,13 @@
 package jp.co.muroo.systems.bsp.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,19 +40,16 @@ public class PayActivity extends Activity {
 
     private Button btnSeedTmp = null;
 
-    //1:決済処理　2:返金処理
-    private int processKbn = 0;
-
     public MspApplication mspApp = null;
 
     private static final int START_SCAN = 0x0001;
 
     CommUtil commUtil = null;
 
-    MurooKeyView murooKey = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.d("PayActivity", "muroo===============================================onCreate");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
@@ -72,7 +66,6 @@ public class PayActivity extends Activity {
 
         userInfoTextView.setText(mspApp.getShopName() + "/" + mspApp.getUserId());
 
-        processKbn =  mspApp.getProcessKbn();
         //処理区分により、画面の文字を初期化
         this.setLayout();
 
@@ -90,39 +83,25 @@ public class PayActivity extends Activity {
         murooKey.setNumListener(
                 //Lambda書き方
                 v -> {
-                    System.out.println("MurooKeyView setNumListener");
                     //数字キーの入力処理
                     String valueStr = amountDataTxt.getText().toString().trim();
                     amountDataTxt.setText(valueStr + ((Button)v).getText().toString());
                 }
-                /*
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println("text1View");
-                    }
-                }
-                */
         );
         murooKey.setBackSpaceListener(//Lambda書き方
                 v -> {
-                    System.out.println("MurooKeyView setBackSpaceListener");
-
                     //入力したデータの最後文字を消す
                     this.doBackSpace();
                 }
         );
         murooKey.setACListener(//Lambda書き方
                 v -> {
-                    System.out.println("MurooKeyView setACListener");
-
                     //画面に入力したデータをクリア
                     this.initLayout();
                 }
         );
         murooKey.setEnterListener(//Lambda書き方
                 v -> {
-                    System.out.println("MurooKeyView setEnterListener");
                     //必須条件を判断
                     if (this.doScanCheck()) {
                         this.doScan();
@@ -130,6 +109,12 @@ public class PayActivity extends Activity {
                 }
         );
 
+        try {
+            Class.forName("android.os.AsyncTask");
+        } catch (ClassNotFoundException e) {
+            Log.e("PayActivity", "Class.forName(\"android.os.AsyncTask\")" + e.toString());
+            Toast.makeText(PayActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     //APP再開します
@@ -137,6 +122,7 @@ public class PayActivity extends Activity {
     protected void onResume() {
         super.onResume();
         // The application is in foreground
+        Log.d("PayActivity", "muroo===============================================onResume");
     }
 
     //立ち留まる　APP一時停止 Backにします
@@ -144,13 +130,14 @@ public class PayActivity extends Activity {
     protected void onPause() {
         super.onPause();
         // The application is in background
+        Log.d("PayActivity", "muroo===============================================onPause");
     }
 
     //終了します。
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // De-initialize scanner
+        Log.d("PayActivity", "muroo===============================================onDestroy");
     }
 
     //①スキャンーボタンの処理
@@ -185,6 +172,7 @@ public class PayActivity extends Activity {
     // これは、AsyncTaskを継承したクラス内のメソッドの引数や戻り値の型を指定するためです。
     //決済クラス
     private class DoPayment extends AsyncTask<JSONObject, String, String> {
+
         /**
          * 決済送信
          * @param params
@@ -193,9 +181,26 @@ public class PayActivity extends Activity {
         @Override
         public String doInBackground(JSONObject... params) {
             String result = null;
-            //POSTで　WebAPIに決済送信
-            result = commUtil.doPost(getString(R.string.msp_pay_url), params[0], PayActivity.class.getName());
+            try {
+                //POSTで　WebAPIに決済送信
+                result = commUtil.doPost(getString(R.string.msp_pay_url), params[0], PayActivity.class.getName());
+
+                if (isCancelled()) {
+                    Log.d("doInBackground", "DoPayment isCancelled() is true. OK++++++++++ ");
+                } else {
+                    Log.d("doInBackground", "DoPayment isCancelled() is false. NO!!!!!!!!! ");
+                }
+            } catch (Exception e) {
+                Log.e("DoPayment", e.toString());
+                cancel(true);
+            }
             return result;
+        }
+
+        @Override
+        protected void onCancelled() {
+            Log.d("onCancelled", "DoPayment onCancelled() is runed.");
+            super.onCancelled();
         }
 
         /**
@@ -204,34 +209,38 @@ public class PayActivity extends Activity {
          */
         @Override
         public void onPostExecute(String result) {
+            Log.d("onPostExecute", " onPostExecute is runed.");
             String resultMessage = null;
             try {
                 if (result == null || "JAVAERROR".equals(result)) {
                     resultMessage = getString(R.string.msg0015);
                     //失敗
-                    mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                    mspApp.setResultKbn("99");//結果処理区分（ 99：失敗）
                 } else if ("NOT200ERROR".equals(result)) {
                     resultMessage = getString(R.string.msg0024);
                     //失敗
-                    mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                    mspApp.setResultKbn("99");//結果処理区分（ 99：失敗）
                 } else {
                     JSONObject rootJSON = new JSONObject(result);
 
                     //BSP WebAPI　から受信結果を処理
                     resultMessage = setMspResult(rootJSON);
                 }
-            }
-            catch(JSONException ex) {
-                Log.d("PayActivity", ex.getLocalizedMessage());
+            } catch(JSONException ex) {
+                Log.e("PayActivity", ex.getLocalizedMessage());
                 resultMessage = getString(R.string.msg0016);
                 //失敗
-                mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                mspApp.setResultKbn("99");//結果処理区分（99：失敗）
             }
             //処理が完了
-            if (mspApp.getResultKbn() != null && !("99").equals(mspApp.getResultKbn())) {
-                //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+            if (("00").equals(mspApp.getResultKbn())) {//正常
                 //結果画面に遷移します。
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                startActivity(intent);
+            } else if (("-3").equals(mspApp.getResultKbn())) {
+                //ログインの有効期限が切れてる
+                Toast.makeText(PayActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             } else {
                 //メッセージをセット
@@ -252,33 +261,47 @@ public class PayActivity extends Activity {
             resultMessage = jsonResult.getString("Message");
 
             if ("01".equals(resultCode)) {
-                //成功
-                mspApp.setToken(jsonResult.getString("Token"));
-                mspApp.setPayOrderId(jsonResult.getString("ProcId"));
-                mspApp.setPayProcessDateTime(jsonResult.getString("ProcessDateTime"));
-                mspApp.setPayAmount(Integer.parseInt(jsonResult.getString("Amount")));
+                mspApp.setResultKbn("00");
 
-                String payCompanyKbn = jsonResult.getString("SystemId");
-                mspApp.setPayCompany(commUtil.getPayCompanyNm(payCompanyKbn));
-
-                if (processKbn == 1) { //決済
-                    mspApp.setResultKbn("11");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
-                } else {  //返金
-                    mspApp.setResultKbn("21");
-                }
                 //mspApp.setPayUserId(mspApp.getUserId());
                 //mspApp.setPayDeviceId(mspApp.getDeviceId());
                 mspApp.setServerDigitalSignature(jsonResult.getString("ServerKey"));
 
                 if (!commUtil.checkDigitalSignature(mspApp.getServerDigitalSignature())) {
-                    //デジタル署名　チェックします
-                    mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                    //デジタル署名　チェック 失敗
+                    mspApp.setResultKbn("99");//結果処理区分（99：失敗）
                     resultMessage = getString(R.string.msg0019);
+                } else {
+                    //成功
+                    mspApp.clearPayedInfo();
+
+                    mspApp.setToken(jsonResult.getString("Token"));
+
+                    mspApp.setPayOrderId(jsonResult.getString("ProcId"));
+                    mspApp.setPayProcessDateTime(jsonResult.getString("ProcessDateTime"));
+                    mspApp.setPayAmount(Integer.parseInt(jsonResult.getString("Amount")));
+                    mspApp.setPayCancelAmount(Integer.parseInt(jsonResult.getString("RefundAmount")));
+
+                    String payCompanyKbn = jsonResult.getString("SystemId");
+                    mspApp.setPayCompany(commUtil.getPayCompanyNm(payCompanyKbn));
+
+                    mspApp.setPayUserId(mspApp.getUserId());
+                    mspApp.setPayDeviceId(mspApp.getDeviceId());
+
+                    if (mspApp.getProcessKbn() == 1) { //決済
+                        mspApp.setPayResultKbn("11");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細）
+                    } else {  //返金
+                        mspApp.setPayResultKbn("21");
+                    }
                 }
+            } else if ("13".equals(resultCode)) {
+                //ログインの有効期限が切れてる
+                mspApp.setResultKbn("-3");//結果処理区分（-3：ログインの有効期限が切た）
+                resultMessage = getString(R.string.msg0021);
             } else {
                 //失敗
                 mspApp.setToken(jsonResult.getString("Token"));
-                mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                mspApp.setResultKbn("99");//結果処理区分（ 99：失敗）
             }
             return resultMessage;
         }
@@ -288,7 +311,15 @@ public class PayActivity extends Activity {
 
     //処理区分により、画面の文字を初期化
     private void setLayout() {
-        if (processKbn == 1) {
+        if (mspApp.isListToCancel()) {
+            //照会画面から返金
+            payCodeDataTxt.setText(mspApp.getPayOrderId());
+            amountDataTxt.setText(String.valueOf(mspApp.getListToCancelAmount()));
+
+            mspApp.setListToCancel(false);//Flgを戻る
+        }
+
+        if (mspApp.getProcessKbn() == 1) {
             //決済
             this.setTitle(R.string.head_title_name3);//タイトルバーの文字列
             btnSeedTmp.setText(R.string.button_seed);
@@ -297,6 +328,7 @@ public class PayActivity extends Activity {
             this.setTitle(R.string.head_title_name4);//タイトルバーの文字列
             btnSeedTmp.setText(R.string.button_cancel);
         }
+
     }
     //画面のデータを初期化
     private void initLayout() {
@@ -330,7 +362,7 @@ public class PayActivity extends Activity {
         payBean.setTerminalId(mspApp.getDeviceId());
         payBean.setUserId(mspApp.getUserId());
         payBean.setToken(mspApp.getToken());
-        if (processKbn == 1) {
+        if (mspApp.getProcessKbn() == 1) {
             //決済
             payBean.setProcMode("01");//決済
             //決済QRコードにより、決済センターを決まり・チェック
@@ -428,7 +460,7 @@ public class PayActivity extends Activity {
     //決済センターに送信前のチェック
     private boolean doSeedCheck() {
         //必須条件を判断
-        if (processKbn == 1) {
+        if (mspApp.getProcessKbn() == 1) {
             //決済
             //必須条件を判断
             if ( TextUtils.isEmpty(amountDataTxt.getText())) {//データがない
@@ -443,7 +475,7 @@ public class PayActivity extends Activity {
         }
         if ( TextUtils.isEmpty(payCodeDataTxt.getText())) {//データがない
 
-            if (processKbn == 1) {
+            if (mspApp.getProcessKbn() == 1) {
                 //決済
                 Toast.makeText(PayActivity.this, R.string.msg0008, Toast.LENGTH_SHORT).show();
             } else {
@@ -459,7 +491,7 @@ public class PayActivity extends Activity {
 
     //QRスキャン前のチェック
     private boolean doScanCheck() {
-        if (processKbn == 1) {
+        if (mspApp.getProcessKbn() == 1) {
             //決済
             //必須条件を判断
             if ( TextUtils.isEmpty(amountDataTxt.getText())) {//データがない

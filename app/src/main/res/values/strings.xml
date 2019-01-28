@@ -2,24 +2,27 @@
     <string name="app_name">MSPシステム</string>
     <string name="app_compay">株式会社ムロオシステムズ</string>
 
-    <string name="menu_name1">決済</string>
+    <string name="tool_bat_menu_1">設定</string>
+    <string name="tool_bat_menu_2">ログアウト</string>
+
+    <string name="menu_name1">支払</string>
     <string name="menu_name2">返金</string>
-    <string name="menu_name3">決済一覧</string>
+    <string name="menu_name3">支払一覧</string>
     <string name="menu_name4">返金一覧</string>
 
     <string name="head_title_name1">ログイン</string>
     <string name="head_title_name2">MurooSystems Pay</string>
 
-    <string name="head_title_name3">決済処理</string>
+    <string name="head_title_name3">支払処理</string>
     <string name="head_title_name4">返金処理</string>
 
-    <string name="head_title_name5">決済結果</string>
+    <string name="head_title_name5">支払結果</string>
     <string name="head_title_name6">返金結果</string>
 
-    <string name="head_title_name7">決済一覧</string>
+    <string name="head_title_name7">支払一覧</string>
     <string name="head_title_name8">返金一覧</string>
 
-    <string name="head_title_name9">決済照会</string>
+    <string name="head_title_name9">支払照会</string>
     <string name="head_title_name10">返金照会</string>
 
     <string name="lab_list_startDate">開始時刻:</string>
@@ -43,20 +46,21 @@
     <string name="msg_return1">はい</string>
     <string name="msg_return2">いいえ</string>
 
-    <string name="lab_Amount">決済金額</string>
+    <string name="lab_Amount">支払金額</string>
     <string name="cancel_lab_Amount">返金金額</string>
     <string name="cancel_lab_customId">取引コード情報</string>
     <string name="lab_customId">取引カード情報</string>
 
     <string name="button_on">スキャンー</string>
-    <string name="button_seed">決済</string>
+    <string name="button_seed">支払</string>
     <string name="button_cancel">返金</string>
     <string name="button_clear">クリア</string>
 
     <string name="lab_shopTel">電話:</string>
     <string name="lab_payDetail_kbn">処理状態:</string>
-    <string name="lab_payDetail_compang">決済会社:</string>
-    <string name="lab_payDetail_amount">処理金額:</string>
+    <string name="lab_payDetail_compang">支払会社:</string>
+    <string name="lab_payDetail_amount">支払金額:</string>
+    <string name="lab_payCancel_amount">返済金額:</string>
     <string name="lab_payDetail_userId">担当番号:</string>
     <string name="lab_payDetail_orderId">取引番号:</string>
     <string name="lab_payDetail_deviceId">処理端末:</string>
@@ -68,7 +72,7 @@
     <string name="lab_payDetail_kbn_value4">返金完了</string>
 
     <string name="button_print">印刷</string>
-    <string name="button_end">完了</string>
+    <string name="button_end">戻る</string>
 
     <string name="msp_login_url">http://192.168.31.209:2000/msp/LoginApi/PostLoginProcess</string>
     <string name="msp_pay_url">http://192.168.31.209:2000/msp/PaymentApi/PostPaymentProcess</string>
@@ -85,7 +89,7 @@
 
     <string name="msg0009">コードを入力してください</string>
     <string name="msg0010">データが有りません。</string>
-    <string name="msg0011">…</string>
+    <string name="msg0011">ログアウトしてよろしいでしょうか</string>
 
     <string name="msg0012">送信しました。少々お待ちください。</string>
     <string name="msg0013">ユーザーIDを入力してください。</string>
@@ -98,9 +102,9 @@
     <string name="msg0018">先に取引コード情報をスキャンください。</string>
     <string name="msg0019">デジタル署名のチェックが失敗しました。</string>
     <string name="msg0020">有効のコードではありません。</string>
-    <string name="msg0021">…</string>
+    <string name="msg0021">ログインの有効期限が切れていますので、再ログインしてください。</string>
 
-    <string name="msg0022">…</string>
+    <string name="msg0022">返金済のデータので、返金処理ができません。</string>
     <string name="msg0023">…</string>
 
     <string name="msg0024">送信処理のResponseCodeは200以外になっています。</string>
@@ -132,5 +136,16 @@
     <string name="muroo_key_str_bs">🔙</string>
     <string name="muroo_key_str_ac">AC</string>
     <string name="muroo_key_str_et">[―]</string>
+
+    <string name="muroo_list_str1">画面を引き下げて...</string>
+    <string name="muroo_list_str2">指を離すと再検索...</string>
+    <string name="muroo_list_str3">検索中...</string>
+    <string name="muroo_list_str4">...</string>
+
+    <string name="muroo_list_str5">指を離すともっと表示...</string>
+    <string name="muroo_list_str6">全部データは表示しました</string>
+    <string name="muroo_list_str7">読み込み処理が失敗しました</string>
+    <string name="muroo_list_str8">読み込み中...</string>
+    <string name="muroo_list_str9">...</string>
 
 </resources>

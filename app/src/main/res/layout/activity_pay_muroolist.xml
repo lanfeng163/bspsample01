@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PaylistActivity">
+    tools:context=".activity.PayMuroolistActivity">
 
     <TextView
         android:id="@+id/textView5"
@@ -47,10 +47,17 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
         app:layout_constraintStart_toEndOf="@+id/textView6" />
 
-    <ListView
-        android:id="@+id/payListView"
+    <jp.co.muroo.systems.bsp.contents.MurooListView
+        android:id="@+id/payNewMurooListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+
+        android:scrollbars="vertical"
+        android:fadeScrollbars="true"
+
+        android:divider="#05f"
+        android:dividerHeight="2px"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

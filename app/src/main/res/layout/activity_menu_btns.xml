@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".activity.MenuBtnsActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/muroo_tool_bar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?android:attr/actionBarSize"
+        android:background="@color/color_black"
+        app:navigationIcon="@drawable/ic_back_white_24dp"
+        app:titleTextColor="@color/color_white"
+        app:titleMarginStart="35dp"/>
+
     <TextView
         android:id="@+id/txt_MainMenuInfo"
         android:layout_width="340dp"
@@ -74,5 +84,6 @@
         android:text="@string/menu_name1"
         android:textSize="@dimen/font_size1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/muroo_tool_bar" />
+
 </android.support.constraint.ConstraintLayout>

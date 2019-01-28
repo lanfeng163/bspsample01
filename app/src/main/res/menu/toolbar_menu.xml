@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/tool_bat_menu_1"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+        -->
+    <item
+        android:id="@+id/action_sys_end"
+        android:icon="@drawable/baseline_exit_to_app_white_24dp"
+        android:title="@string/tool_bat_menu_2"
+        android:orderInCategory="101"
+        app:showAsAction="ifRoom" />
+</menu>

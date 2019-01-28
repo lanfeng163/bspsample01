@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,11 +31,13 @@ import jp.co.muroo.systems.bsp.MspApplication;
 import jp.co.muroo.systems.bsp.R;
 import jp.co.muroo.systems.bsp.comm.CommPayDetailBean;
 import jp.co.muroo.systems.bsp.comm.CommUtil;
+import jp.co.muroo.systems.bsp.contents.MurooListView;
 
 /**
- * 決済・返金照会一覧画面　「使っていない」
+ * 決済・返金照会一覧画面「MurooListView」で
+ * Header Fooder を追加しました。
  */
-public class PaylistActivity extends Activity {
+public class PayMuroolistActivity extends Activity {
 
     public MspApplication mspApp = null;
     //1:決済照会　2:返金照会
@@ -49,20 +50,46 @@ public class PaylistActivity extends Activity {
 
     StringBuffer stringBuilderDatetime;
 
-    private int lastVisibleItemPosition = 0;// 标记上次滑动位置，初始化默认为0
-    private boolean scrollFlag = false;// 标记是否滑动
-
     // idがlistのListViewを取得
-    ListView listView = null;
+    MurooListView murooListView = null;
+
+    //検索した結果
+    ArrayList<CommPayDetailBean> beanListData = new ArrayList<>();
+
+    // ListViewに表示
+    List<Map<String, String>> listData = new ArrayList<Map<String,String>>();
+
+    SimpleAdapter listAdapter = null;
+
+    //一回読み込むデータ行数
+    int perListViewCount = 10;
+
+    //今表示した位置
+    int listViewIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paylist);
+        setContentView(R.layout.activity_pay_muroolist);
 
         payDateStart = findViewById(R.id.txtStartDate);
         payDateEnd = findViewById(R.id.txtEndDate);
-        listView = findViewById(R.id.payListView);
+
+        /*
+        // ヘッダー用のテキストビューを生成
+        TextView varTextView1 = new TextView(PayMuroolistActivity.this);
+        // ヘッダー用のテキストを設定
+        varTextView1.setText("Header888888888888888888888");
+        // リストビューのヘッダーにテキストビューを配置
+        murooListView.addHeaderView(varTextView1);
+
+        // フッター用のテキストビューを生成
+        TextView varTextView2 = new TextView(PayMuroolistActivity.this);
+        // フッター用のテキストを設定
+        varTextView2.setText("Footer88888888889999999999999");
+        // リストビューのフッターにテキストをビューを配置
+        murooListView.addFooterView(varTextView2);
+        */
 
         mspApp = (MspApplication) this.getApplication();
         commUtil = CommUtil.getInstance();
@@ -71,69 +98,63 @@ public class PaylistActivity extends Activity {
         //処理区分により、画面の文字を初期化
         this.setLayout();
 
+        this.initListView();
+
         //onChangedをセット
         payDateStart.addTextChangedListener(new DateTextWatcher(payDateStart));
         payDateEnd.addTextChangedListener(new DateTextWatcher(payDateEnd));
 
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //スクロールしたときに表示するべきデータを選別できるようにします。
         //クラスにListView.OnScrollListenerインタフェースを実装します。
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        //murooListView.setOnScrollListener(new AbsListView.OnScrollListener()
 
-            /**
-             * スクロールの状態を検知する
-             * @param view
-             * @param scrollState
-             */
+        this.initListener();
+
+        //明細データを検索処理
+        this.doSearch();
+    }
+
+    private void initListView() {
+
+        murooListView = findViewById(R.id.payNewMurooListView);
+
+        listAdapter = new SimpleAdapter(this,
+                listData, // 使用するデータ
+                R.layout.pay_list_item, // 自作したレイアウト
+                new String[]{"lineId","payOrderId","payAmount","payCancelAmount","payCompanyNm", "payDateTime"}, // どの項目を
+                new int[]{R.id.payListId, R.id.payListOrderId, R.id.payListAmount, R.id.payListCancelAmount, R.id.payListCompany, R.id.payListDateTime} // どのidの項目に入れるか
+        );
+
+        murooListView.setAdapter(listAdapter);
+        murooListView.setOnItemClickListener(new ListItemClickListener());
+    }
+
+    private void initListener() {
+
+        murooListView.setOnRefreshListener(new MurooListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //最検索
+                doSearch();
+            }
+
+            @Override
+            public void onLoadMore() {
+                //もっとデータを表示
+                loadData(false);
+            }
+        });
+        murooListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                switch (scrollState) {
-                    // スクロールしていない
-                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:// 是当屏幕停止滚动时
-
-                        // スクロール中であることを示すフラグをfalseに
-                        scrollFlag = false;
-
-                        // 判断滚动到底部 、position是从0开始算起的
-                        if (view.getLastVisiblePosition() == (listView.getCount() - 1)) {
-                            //TODO
-                        }
-                        // 判断滚动到顶部
-                        if (view.getFirstVisiblePosition() == 0) {
-                            //TODO
-                        }
-                        break;
-                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:// 滚动时
-                        scrollFlag = true;
-                        break;
-                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
-                        // 当用户由于之前划动屏幕并抬起手指，屏幕产生惯性滑动时，即滚动时
-                        scrollFlag = true;
-                        break;
-                }
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-                //当滑动时
-                if (scrollFlag) {
-                    if (firstVisibleItem < lastVisibleItemPosition) {
-                        // 上滑
-                        //TODO
-                    } else if (firstVisibleItem > lastVisibleItemPosition) {
-                        // 下滑
-                        //TODO
-                    } else {
-                        return;
-                    }
-                    lastVisibleItemPosition = firstVisibleItem;//更新位置
-                }
             }
         });
-
-        //明細データを検索処理
-        this.doSearch();
     }
     /**
      * 明細データを検索処理
@@ -142,10 +163,93 @@ public class PaylistActivity extends Activity {
     private void doSearch() {
         //Jsonを作成
         JSONObject json = this.setSearchJson();
-        Log.i("PaylistActivity","送信Json is: " + json.toString());
+        Log.i("PayMuroolistActivity","送信Json is: " + json.toString());
         //ログイン送信は非同期で処理します
         new DoGetListData().execute(json);
+        
     }
+
+    /**
+     * データを表示(一回の行数のみを表示)
+     * @param isSearchEnd
+     */
+    private void loadData(boolean isSearchEnd) {
+        if (beanListData == null || beanListData.size() ==0) {
+            //データは何もなし
+            listData.clear();
+            listViewIndex = 0;
+            murooListView.onNoMoreData();
+            Log.i("PayMuroolistActivity", "データがなし" );
+            return;
+        }
+
+        if (isSearchEnd) {
+            listData.clear();
+            listViewIndex = 0;
+        } else {
+            listViewIndex++;
+        }
+
+        //一回読み込み
+        int startIndex = (listViewIndex) * perListViewCount;
+
+        int endIndex = (listViewIndex + 1) * perListViewCount;
+        if (endIndex > beanListData.size()) {
+            endIndex = beanListData.size();
+        }
+        Log.i("PayMuroolistActivity", "Start is: " + startIndex + " End is:" + endIndex);
+
+        if (startIndex >= beanListData.size()) {
+            //読む込みデータがなし
+            murooListView.onNoMoreData();
+            if (!isSearchEnd) {
+                //戻る
+                listViewIndex--;
+            }
+            return;
+        }
+
+        for (int i = startIndex; i < endIndex; i++) {
+
+            CommPayDetailBean bean = beanListData.get(i);
+
+            HashMap<String,String> data = new HashMap<>();
+            // 引数には、(名前,実際の値)という組合せで指定します　名前はSimpleAdapterの引数で使用します
+            data.put("lineId", Integer.toString(i));
+            data.put("payOrderId", getString(R.string.lab_payDetail_orderId) + bean.getPayOrderId());
+
+            String payAmountStr = "¥" + bean.getPayAmount() +"円";
+            String payCancelAmountStr = "¥" + bean.getPayCancelAmount() +"円";
+            data.put("payAmount", getString(R.string.lab_payDetail_amount) + payAmountStr);
+            data.put("payCancelAmount", getString(R.string.lab_payCancel_amount) + payCancelAmountStr);
+
+            data.put("payCompanyNm", getString(R.string.lab_payDetail_compang) + bean.getPayCompany());
+            data.put("payDateTime", getString(R.string.lab_payDetail_dateTime) + bean.getPayDateTime());
+            listData.add(data);
+        }
+//
+//
+//        /*
+//         * Adapterを生成
+//         * R.layout.custom_list_layout : リストビュー自身のレイアウト。今回は自作。
+//         * new String[]{***} : 受け渡し元項目名
+//         * new int[]{***} : 受け渡し先ID
+//         */
+//        SimpleAdapter simpleAdapter = new SimpleAdapter(this,
+//                listData, // 使用するデータ
+//                R.layout.pay_list_item, // 自作したレイアウト
+//                new String[]{"lineId","payOrderId","payAmount","payCancelAmount","payCompanyNm", "payDateTime"}, // どの項目を
+//                new int[]{R.id.payListId, R.id.payListOrderId, R.id.payListAmount, R.id.payListCancelAmount, R.id.payListCompany, R.id.payListDateTime} // どのidの項目に入れるか
+//        );
+//
+//        murooListView.setAdapter(simpleAdapter);
+//        murooListView.setOnItemClickListener(new ListItemClickListener());
+
+        murooListView.onRefreshComplete(true);
+        listAdapter.notifyDataSetChanged();
+
+    }
+
     /**
      * JSONデータを作成
      * @return
@@ -170,7 +274,7 @@ public class PaylistActivity extends Activity {
             json.put("procEndDateTime", payDateEnd.getText().toString() + ":59");
 
         } catch (JSONException e) {
-            Log.d("PaylistActivity", e.toString());
+            Log.e("PayMuroolistActivity", e.toString());
         }
         return json;
     }
@@ -197,11 +301,8 @@ public class PaylistActivity extends Activity {
      */
     public void setPayList(JSONObject jsonResult) throws JSONException {
 
-        // ListViewに表示する項目を生成
-        ArrayList<CommPayDetailBean> beanListData = new ArrayList<>();
-        List<Map<String, String>> listData = new ArrayList<Map<String,String>>();
         JSONArray listBeans =  jsonResult.getJSONArray("ProcBeans");
-
+        beanListData = new ArrayList<>();
         for (int i = 0; i < listBeans.length(); i++) {
             //jsonResult から　code の文字を取得
             JSONObject jsonBean = listBeans.getJSONObject(i);
@@ -215,7 +316,6 @@ public class PaylistActivity extends Activity {
             if (payCancelAmount == null || "".equals(payCancelAmount.trim())) {
                 payCancelAmount = "0";
             }
-
 
             String payOrderId = jsonBean.getString("ProcId");
             String payDateTime = jsonBean.getString("ProcessDateTime");
@@ -246,42 +346,14 @@ public class PaylistActivity extends Activity {
             payBean.setPayCompany(payCompanyNm);
             beanListData.add(payBean);
 
-            HashMap<String,String> data = new HashMap<>();
-            // 引数には、(名前,実際の値)という組合せで指定します　名前はSimpleAdapterの引数で使用します
-            data.put("lineId", Integer.toString(i));
-            data.put("payOrderId", getString(R.string.lab_payDetail_orderId) + payOrderId);
-
-            String payAmountStr = "¥" + payAmount +"円";
-            String payCancelAmountStr = "¥" + payCancelAmount +"円";
-            data.put("payAmount", getString(R.string.lab_payDetail_amount) + payAmountStr);
-            data.put("payCancelAmount", getString(R.string.lab_payCancel_amount) + payCancelAmountStr);
-
-            data.put("payCompanyNm", getString(R.string.lab_payDetail_compang) + payCompanyNm);
-            data.put("payDateTime", getString(R.string.lab_payDetail_dateTime) + payDateTime);
-            listData.add(data);
         }
 
         //明細データを保存
         mspApp.setPayDataList(beanListData);
 
-        /*
-         * Adapterを生成
-         * R.layout.custom_list_layout : リストビュー自身のレイアウト。今回は自作。
-         * new String[]{***} : 受け渡し元項目名
-         * new int[]{***} : 受け渡し先ID
-         */
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this,
-                listData, // 使用するデータ
-                R.layout.pay_list_item, // 自作したレイアウト
-                new String[]{"lineId","payOrderId","payAmount","payCancelAmount","payCompanyNm", "payDateTime"}, // どの項目を
-                new int[]{R.id.payListId, R.id.payListOrderId, R.id.payListAmount, R.id.payListCancelAmount, R.id.payListCompany, R.id.payListDateTime} // どのidの項目に入れるか
-        );
+        //データを表示
+        loadData(true);
 
-        listView.setHeaderDividersEnabled(false);
-        listView.setFooterDividersEnabled(true);
-
-        listView.setAdapter(simpleAdapter);
-        listView.setOnItemClickListener(new ListItemClickListener());
     }
 
     /**
@@ -315,12 +387,12 @@ public class PaylistActivity extends Activity {
     private void showCalendar(TextView dateView) {
 
         Calendar c = Calendar.getInstance();
-        Dialog dateDialog = new DatePickerDialog(PaylistActivity.this, (arg0, year, month, day) -> {
+        Dialog dateDialog = new DatePickerDialog(PayMuroolistActivity.this, (arg0, year, month, day) -> {
             stringBuilderDatetime = new StringBuffer("");
             stringBuilderDatetime.append(year + "-" + ((month+1) < 10 ? "0"+ (month+1) : (month+1)+"") + "-" + (day < 10 ? "0"+ day : day));
 
             Calendar time = Calendar.getInstance();
-            Dialog timeDialog = new TimePickerDialog(PaylistActivity.this, (view, hourOfDay, minute) -> {
+            Dialog timeDialog = new TimePickerDialog(PayMuroolistActivity.this, (view, hourOfDay, minute) -> {
                 stringBuilderDatetime.append(" " + (hourOfDay < 10 ? "0"+ hourOfDay : hourOfDay) + ":"+(minute < 10 ? "0"+ minute : minute));
                 //項目にデータをセット
                 dateView.setText(stringBuilderDatetime);//yyMM-dd-HH mm:ss
@@ -371,30 +443,32 @@ public class PaylistActivity extends Activity {
                     resultMessage = setMspResult(rootJSON);
                 }
             } catch (JSONException ex) {
-                Log.d(PaylistActivity.class.getName(), ex.getLocalizedMessage());
+                Log.d(PayMuroolistActivity.class.getName(), ex.getLocalizedMessage());
                 resultMessage = getString(R.string.msg0016);
                 //失敗
                 mspApp.setResultKbn("99");//結果処理区分（99：失敗）
             }
+
+            murooListView.onRefreshComplete(true);
 
             //処理が完了
             if (("00").equals(mspApp.getResultKbn())) {
                 //正常
                 //何もしません
             } else if (("-1").equals(mspApp.getResultKbn())) {//-1:データが無し
-                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PayMuroolistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
             } else if (("-2").equals(mspApp.getResultKbn())) {//-2:結果データがオーバー
                 //データは最大件数を越えたら
-                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PayMuroolistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
             } else if (("-3").equals(mspApp.getResultKbn())) {
                 //ログインの有効期限が切れてる
-                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PayMuroolistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             } else {
                 //異常メッセージを表示
-                Toast.makeText(PaylistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PayMuroolistActivity.this, resultMessage, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -472,7 +546,7 @@ public class PaylistActivity extends Activity {
             CommPayDetailBean payBean = mspApp.getPayDataList().get(lineId);
 
             //詳細画面へ移動します
-            Intent intent = new Intent(PaylistActivity.this, DetailActivity.class);
+            Intent intent = new Intent(PayMuroolistActivity.this, DetailActivity.class);
             intent.putExtra("payCompany", payBean.getPayCompany());
             intent.putExtra("payAmount", payBean.getPayAmount());
             intent.putExtra("payCancelAmount", payBean.getPayCancelAmount());

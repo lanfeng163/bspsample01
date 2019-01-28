@@ -321,11 +321,11 @@ public class LoginActivity extends Activity {
                 if (result == null || "JAVAERROR".equals(result)) {
                     resultMessage = getString(R.string.msg0015);
                     //失敗
-                    mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                    mspApp.setResultKbn("99");//結果処理区分（ 99：失敗）
                 } else if ("NOT200ERROR".equals(result)) {
                     resultMessage = getString(R.string.msg0024);
                     //失敗
-                    mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                    mspApp.setResultKbn("99");//結果処理区分（99：失敗）
                 } else {
                     JSONObject rootJSON = new JSONObject(result);
 
@@ -336,11 +336,12 @@ public class LoginActivity extends Activity {
                 Log.d(LoginActivity.class.getName(), ex.toString());
                 resultMessage = getString(R.string.msg0016);
                 //失敗
-                mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                mspApp.setResultKbn("99");//結果処理区分（99：失敗）
             }
             //処理が完了
-            if (mspApp.getResultKbn() != null && !("99").equals(mspApp.getResultKbn())) {
-                //結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+
+            //処理が完了
+            if (("00").equals(mspApp.getResultKbn())) {//正常
                 //結果画面に遷移します。
                 //Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 Intent intent = new Intent(getApplicationContext(), MenuBtnsActivity.class);
@@ -363,31 +364,31 @@ public class LoginActivity extends Activity {
             resultMessage = jsonResult.getString("Message");
 
             if ("01".equals(resultCode)) {
-                //成功
-                String tokenStr = jsonResult.getString("Token");
-                String shopNameStr = jsonResult.getString("ShopName");
-                String shopInfo = jsonResult.getString("ShopAddress");
-                String shopTel = jsonResult.getString("ShopTel");
+
                 String serverKeyStr = jsonResult.getString("ServerKey");
-                //    String processDateTimeStr = rootJSON.getString("ProcessDateTime");
-
-                //基本データをセット存する
-                mspApp.setShopName(shopNameStr);
-                mspApp.setShopInfo(shopInfo);
-                mspApp.setShopTel(shopTel);
-                mspApp.setToken(tokenStr);
                 mspApp.setServerDigitalSignature(serverKeyStr);
-
                 if (!commUtil.checkDigitalSignature(mspApp.getServerDigitalSignature())) {
                     //デジタル署名　チェックします
-                    mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                    mspApp.setResultKbn("99");//結果処理区分（99：失敗）
                     resultMessage = getString(R.string.msg0019);
                 } else {
                     mspApp.setResultKbn("00");//WebAPI処理 正常
+                    //成功
+                    String tokenStr = jsonResult.getString("Token");
+                    String shopNameStr = jsonResult.getString("ShopName");
+                    String shopInfo = jsonResult.getString("ShopAddress");
+                    String shopTel = jsonResult.getString("ShopTel");
+                    //    String processDateTimeStr = rootJSON.getString("ProcessDateTime");
+
+                    //基本データをセット存する
+                    mspApp.setShopName(shopNameStr);
+                    mspApp.setShopInfo(shopInfo);
+                    mspApp.setShopTel(shopTel);
+                    mspApp.setToken(tokenStr);
                 }
             } else {
                 //WebAPI処理　失敗
-                mspApp.setResultKbn("99");//結果処理区分（11：決済結果 12：決済詳細　21：返金結果 22：返金詳細 99：失敗）
+                mspApp.setResultKbn("99");//結果処理区分（99：失敗）
             }
             return resultMessage;
         }
