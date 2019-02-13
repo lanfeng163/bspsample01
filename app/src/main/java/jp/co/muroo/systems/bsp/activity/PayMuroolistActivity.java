@@ -61,8 +61,12 @@ public class PayMuroolistActivity extends Activity {
 
     SimpleAdapter listAdapter = null;
 
-    //一回読み込むデータ行数
+    //検索した結果リストから一回読み込んで表示するデータ行数
+    // 1>10 11>20
     int perListViewCount = 10;
+
+    //一回検索するデータ行数 　1>40　41>80
+    int perSearchLineCount = 40;
 
     //今表示した位置
     int listViewIndex = 0;

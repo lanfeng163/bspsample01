@@ -74,9 +74,12 @@
     <string name="button_print">印刷</string>
     <string name="button_end">戻る</string>
 
-    <string name="msp_login_url">http://192.168.31.209:2000/msp/LoginApi/PostLoginProcess</string>
-    <string name="msp_pay_url">http://192.168.31.209:2000/msp/PaymentApi/PostPaymentProcess</string>
-    <string name="msp_pay_ist_url">http://192.168.31.209:2000/msp/SearchApi/PostSearchTradeProcess</string>
+    <!--http://192.168.31.209:2000 -->
+    <!--https://msp.mapps.co.jp:8443 -->
+
+    <string name="msp_login_url">https://msp.mapps.co.jp:8443/msp/LoginApi/PostLoginProcess</string>
+    <string name="msp_pay_url">https://msp.mapps.co.jp:8443/msp/PaymentApi/PostPaymentProcess</string>
+    <string name="msp_pay_ist_url">https://msp.mapps.co.jp:8443/msp/SearchApi/PostSearchTradeProcess</string>
 
     <string name="msg0001">ユーザーID</string>
     <string name="msg0002">パスワード</string>
@@ -135,7 +138,7 @@
     <string name="muroo_key_str00">00</string>
     <string name="muroo_key_str_bs">🔙</string>
     <string name="muroo_key_str_ac">AC</string>
-    <string name="muroo_key_str_et">[―]</string>
+    <string name="muroo_key_str_et">Scan</string>
 
     <string name="muroo_list_str1">画面を引き下げて...</string>
     <string name="muroo_list_str2">指を離すと再検索...</string>
